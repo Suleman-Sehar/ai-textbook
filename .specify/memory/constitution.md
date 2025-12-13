@@ -1,55 +1,48 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- SYNC IMPACT REPORT
+Version change: 1.0.0 → 1.1.0
+Modified principles: None (new constitution)
+Added sections: All principles and sections based on user requirements
+Removed sections: Template placeholders
+Templates requiring updates: N/A (first version)
+Follow-up TODOs: None
+-->
+# Physical AI & Humanoid Robotics Textbook Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Textbook-First Development
+All features and implementations must serve the primary goal of creating comprehensive educational content about Physical AI and Humanoid Robotics. Every code example, diagram, and concept explanation must contribute directly to the 15,000-20,000 word Docusaurus textbook. Focus on pedagogical value over feature completeness.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Embodied Intelligence Focus
+Maintain strict adherence to the "Digital Brain → Physical Body" theme throughout all content. All modules must connect digital AI systems (ROS 2, NVIDIA Isaac, Vision-Language models) to physical embodiment (humanoid robots, sensors, actuators). Content must emphasize the integration of perception, cognition, and action.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Spec-Driven Content Creation (NON-NEGOTIABLE)
+All textbook content must follow SpecKit Plus methodology: Specifications written → Content approved → Content drafted → Implemented in Docusaurus format. Each module (ROS 2, Digital Twin, NVIDIA Isaac AI, Vision-Language-Action) must have detailed specifications before writing begins.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Multi-Platform Compatibility
+Ensure all code examples and instructions work consistently on Ubuntu 22.04 with ROS 2 Humble/Iron. Hardware documentation must cover both physical robot options (Go2, G1, OP3, TonyPi) and cloud alternatives (AWS g5.2xlarge with NVIDIA A10G). Include Jetson Orin Nano edge AI kit compatibility.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Structured Learning Progression
+Content must follow the 13-week course structure with progressive difficulty: Weeks 1-5 (ROS 2 Nervous System), Weeks 6-7 (Digital Twin), Weeks 8-10 (NVIDIA Isaac AI Brain), Weeks 11-13 (Vision-Language-Action). Each module builds upon previous concepts with clear prerequisites.
 
-### [PRINCIPLE_6_NAME]
+### VI. Automated File Generation
 
 
-[PRINCIPLE__DESCRIPTION]
+All missing textbook files and folders must be auto-generated following the established patterns. Use the auto-create rules to maintain content structure integrity and continue execution when encountering missing assets. Generated files must contain proper headers and auto-generation notices.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Content and Technical Standards
+<!-- Additional constraints for textbook development -->
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+All content must adhere to Docusaurus Markdown format with proper frontmatter. Code examples must include type hints, English comments, and error handling. Minimum 5 code examples per module. Each module requires 3 diagrams (total 12). Hardware documentation must cover workstation specs (RTX 4070 Ti+, 64GB RAM) and edge AI kit components (Jetson Orin Nano, RealSense D435i, ReSpeaker Mic, IMU module).
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow and Organization
+<!-- Development workflow, file organization, and quality standards -->
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Organize content by feature/module rather than file type with maximum 3-4 nesting levels. All file and folder names use English kebab-case. Documentation placement follows: specs in /specs, textbook content in /docs, configurations at root. Code comments must be in English with consistent terminology. User-facing responses use Roman Urdu. All unused files must be deleted and .gitignore maintained properly.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+<!-- Constitution governs all development practices; amendments require explicit documentation -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices. All PRs and reviews must verify compliance with textbook-first development and embodied intelligence focus. Any deviation from the 13-week module structure or content requirements must be justified. Automation must create missing files/folders automatically. All deliverables (GitHub repo, live Docusaurus book) must comply with WCAG 2.1 AA accessibility standards.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.1.0 | **Ratified**: 2025-12-13 | **Last Amended**: 2025-12-13

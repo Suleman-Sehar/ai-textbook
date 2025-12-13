@@ -208,3 +208,10 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- Markdown/MDX, JavaScript/Node.js 18+ + Docusaurus v3, Node.js, npm (001-ai-robotics-textbook)
+- File-based (Markdown documents, diagrams, code examples) (001-ai-robotics-textbook)
+
+## Recent Changes
+- 001-ai-robotics-textbook: Added Markdown/MDX, JavaScript/Node.js 18+ + Docusaurus v3, Node.js, npm

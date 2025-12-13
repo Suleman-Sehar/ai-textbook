@@ -1,0 +1,50 @@
+# Content Generation Contract
+
+## Purpose
+This contract defines the interface and expectations for textbook content generation tools and processes.
+
+## Content File Interface
+
+### Structure Requirements
+- **Path**: Must follow `docs/module-{number}-{name}/{topic-name}.md` pattern
+- **Frontmatter**: Must include:
+  - `id`: Unique identifier for the document
+  - `title`: Display title for the document
+  - `sidebar_label`: Label to appear in sidebar navigation
+
+### Content Requirements
+- **Format**: Docusaurus-compliant Markdown with MDX support
+- **Word Count**: Each module must contribute to the overall target
+- **Code Examples**: Include type hints and English comments
+- **Diagrams**: Reference diagrams with proper alt text
+
+## Diagram Asset Interface
+
+### Structure Requirements
+- **Path**: Must follow `diagrams/module-{number}/{diagram-name}.{format}` pattern
+- **Format**: SVG or PNG (with preference for SVG for scalability)
+- **Alt Text**: Must include descriptive alt text for accessibility
+
+## Code Example Interface
+
+### Structure Requirements
+- **Path**: Must follow `code/module-{number}/{example-name}/[main file]` pattern
+- **Language**: Must include proper syntax highlighting support
+- **Documentation**: Must include English comments and type hints
+
+## Validation Interface
+
+### Word Count Validation
+- **Input**: Directory path to module
+- **Output**: Word count and compliance status
+- **Requirement**: Must validate against 15,000-20,000 total word target
+
+### Link Validation
+- **Input**: Directory path to textbook
+- **Output**: List of broken links
+- **Requirement**: Must validate internal and external links
+
+### Content Compliance Validation
+- **Input**: Directory path to textbook
+- **Output**: Compliance report against constitution requirements
+- **Requirement**: Must validate Docusaurus format, frontmatter, and organizational structure
