@@ -1,0 +1,227 @@
+// ChatInterface.jsx
+// RAG-powered chat interface component
+
+import React, { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
+
+const ChatInterface = () => {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
+
+    const userMessage = {
+      id: Date.now(),
+      text: inputValue,
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    // Add user message to chat
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Call the RAG API to get contextually relevant response
+      const response = await fetch('/api/rag/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: inputValue,
+          topK: 3
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Generate AI response based on retrieved documents
+      const aiResponse = await generateAIResponse(inputValue, data.results);
+
+      const aiMessage = {
+        id: Date.now() + 1,
+        text: aiResponse.response,
+        sender: 'ai',
+        timestamp: new Date(),
+        sources: aiResponse.sources
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (err) {
+      console.error('Chat error:', err);
+      setError('Failed to get response. Please try again.');
+
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: 'Sorry, I encountered an error processing your request. Please try again.',
+        sender: 'ai',
+        timestamp: new Date(),
+        isError: true
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generateAIResponse = async (query, searchResults) => {
+    // In a real implementation, this would call an LLM API with the context
+    // For now, we'll create a simulated response based on the retrieved documents
+
+    if (searchResults.length === 0) {
+      return {
+        response: "I couldn't find any relevant information in the textbook about your query. Please try rephrasing your question.",
+        sources: []
+      };
+    }
+
+    // Create a response based on the most relevant results
+    const relevantContent = searchResults.slice(0, 2).map((result, index) => {
+      const contentPreview = result.content.substring(0, 200) + '...';
+      return `Source ${index + 1} (${result.metadata.title}): ${contentPreview}`;
+    }).join('\n\n');
+
+    const response = `Based on the Physical AI & Humanoid Robotics textbook:\n\n${relevantContent}\n\nFor more detailed information, please refer to the specific sections in the textbook.`;
+
+    return {
+      response,
+      sources: searchResults.map(result => ({
+        title: result.metadata.title,
+        source: result.metadata.source,
+        similarity: result.similarity
+      }))
+    };
+  };
+
+  const formatTimestamp = (timestamp) => {
+    return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <div className={clsx('flex flex-col', 'h-[600px] max-w-4xl mx-auto')}>
+      <div className="flex-1 overflow-y-auto mb-4 p-4 border rounded-lg bg-gray-50">
+        <div className="mb-4 text-center">
+          <h3 className="text-lg font-semibold text-gray-800">Physical AI & Humanoid Robotics Assistant</h3>
+          <p className="text-sm text-gray-600">Ask questions about the textbook content</p>
+        </div>
+
+        {messages.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            <p>Ask me anything about Physical AI & Humanoid Robotics!</p>
+            <p className="text-sm mt-2">I can help explain concepts from the textbook, clarify topics, or discuss specific modules.</p>
+          </div>
+        )}
+
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={clsx(
+              'mb-4',
+              message.sender === 'user' ? 'text-right' : 'text-left'
+            )}
+          >
+            <div className={clsx(
+              'inline-block p-3 rounded-lg max-w-[80%]',
+              message.sender === 'user'
+                ? 'bg-blue-500 text-white'
+                : message.isError
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-white border'
+            )}>
+              <div className="whitespace-pre-wrap">{message.text}</div>
+              <div className="text-xs opacity-70 mt-1">
+                {formatTimestamp(message.timestamp)}
+              </div>
+            </div>
+
+            {message.sources && message.sources.length > 0 && (
+              <div className="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
+                <strong>Sources:</strong>
+                <ul className="list-disc list-inside mt-1">
+                  {message.sources.map((source, idx) => (
+                    <li key={idx}>
+                      {source.title} (Relevance: {(source.similarity * 100).toFixed(1)}%)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {isLoading && (
+          <div className="mb-4 text-left">
+            <div className="inline-block p-3 rounded-lg bg-white border">
+              <div className="flex items-center">
+                <div className="animate-pulse">Thinking...</div>
+                <div className="ml-2 flex space-x-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {error && (
+        <div className="mb-2 p-2 bg-red-100 text-red-700 rounded text-sm">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Ask a question about Physical AI & Humanoid Robotics..."
+          className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          disabled={!inputValue.trim() || isLoading}
+          className={clsx(
+            'px-4 py-3 rounded-lg font-medium',
+            inputValue.trim() && !isLoading
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          )}
+        >
+          Send
+        </button>
+      </form>
+
+      <div className="mt-3 text-xs text-gray-500 text-center">
+        This assistant uses Retrieval-Augmented Generation (RAG) to provide answers based on the Physical AI & Humanoid Robotics textbook.
+      </div>
+    </div>
+  );
+};
+
+export default ChatInterface;

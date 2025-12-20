@@ -1,0 +1,103 @@
+// Error handling utilities for the Physical AI & Humanoid Robotics Textbook
+
+// Global error handler for the application
+export const setupGlobalErrorHandler = () => {
+  // Only set up global error handlers in browser environment
+  if (typeof window !== 'undefined') {
+    // Handle uncaught JavaScript errors
+    window.addEventListener('error', (event) => {
+      console.error('Global error caught:', event.error);
+      // In a production environment, you might send this to an error tracking service
+      // logErrorToService(event.error, event.filename, event.lineno, event.colno);
+    });
+
+    // Handle unhandled promise rejections
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection:', event.reason);
+      // In a production environment, you might send this to an error tracking service
+      // logErrorToService(event.reason);
+    });
+  }
+};
+
+// Function to log errors to a service (placeholder implementation)
+export const logErrorToService = (error, file = null, line = null, col = null) => {
+  // This would typically send error details to an error tracking service
+  // For now, we'll just log to console in development
+  console.group('Error Report');
+  console.error('Error:', error);
+  console.error('File:', file);
+  console.error('Line:', line);
+  console.error('Column:', col);
+  console.error('Timestamp:', new Date().toISOString());
+  console.groupEnd();
+};
+
+// Error boundary component helper
+export const withErrorBoundary = (WrappedComponent, FallbackComponent) => {
+  return class extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error) {
+      return { hasError: true, error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+      console.error('Component error caught:', error, errorInfo);
+      logErrorToService(error);
+    }
+
+    render() {
+      if (this.state.hasError) {
+        return FallbackComponent ?
+          <FallbackComponent error={this.state.error} /> :
+          <div>Something went wrong.</div>;
+      }
+
+      return <WrappedComponent {...this.props} />;
+    }
+  };
+};
+
+// API error handling utility
+export const handleApiError = async (response) => {
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    error.status = response.status;
+    error.data = errorData;
+    throw error;
+  }
+  return response;
+};
+
+// Safe execution wrapper for async operations
+export const safeExecute = async (asyncFn, fallbackValue = null, onError = null) => {
+  try {
+    return await asyncFn();
+  } catch (error) {
+    console.error('Safe execution error:', error);
+    if (onError) {
+      onError(error);
+    }
+    return fallbackValue;
+  }
+};
+
+// Retry mechanism for operations that might fail temporarily
+export const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      console.warn(`Operation failed (attempt ${attempt}), retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+};

@@ -1,0 +1,39 @@
+# Deployment Instructions
+
+## Vercel Deployment
+
+The Physical AI & Humanoid Robotics Textbook is configured for deployment on Vercel. The project is a standard Docusaurus application that can be deployed using Vercel's automated deployment process.
+
+### Deployment Steps:
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Docusaurus project
+3. Use the following build settings:
+   - Build Command: `npm run build`
+   - Output Directory: `build`
+   - Install Command: `npm install`
+
+### Environment Configuration:
+
+No special environment variables are required for this static site.
+
+## GitHub Repository
+
+The source code for this textbook is available at the GitHub repository that was used for development. The repository contains all source files, documentation, and configuration needed to build and deploy the textbook.
+
+## Verification
+
+After deployment, the site should be accessible and all functionality should work as expected:
+- All pages should load correctly
+- Navigation should work properly
+- Links should be functional
+- Mobile responsiveness should be maintained
+- Search functionality should be operational
+
+## GitHub Repo Link
+https://github.com/[your-username]/physical-ai-textbook
+
+## Vercel Deployment Link
+https://physical-ai-textbook.vercel.app
+
+Note: These are placeholder links. In an actual deployment scenario, these would be replaced with the real GitHub repository URL and the Vercel deployment URL.

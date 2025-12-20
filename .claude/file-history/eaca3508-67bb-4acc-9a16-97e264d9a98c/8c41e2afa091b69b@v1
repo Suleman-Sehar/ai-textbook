@@ -1,0 +1,127 @@
+// vector-store.js
+// Simple in-memory vector store for RAG system (can be replaced with a proper vector DB)
+
+import { createEmbedding } from './embedding-generator.js';
+
+class VectorStore {
+  constructor() {
+    this.documents = []; // Store document chunks with embeddings
+    this.index = {}; // For fast lookup by ID
+  }
+
+  /**
+   * Add a document chunk to the vector store
+   * @param {string} id - Unique identifier for the chunk
+   * @param {string} content - Content of the chunk
+   * @param {Object} metadata - Additional metadata about the chunk
+   */
+  async addDocument(id, content, metadata = {}) {
+    // Create embedding for the content
+    const embedding = await createEmbedding(content);
+
+    const doc = {
+      id,
+      content,
+      embedding,
+      metadata,
+      createdAt: new Date().toISOString()
+    };
+
+    this.documents.push(doc);
+    this.index[id] = doc;
+
+    return doc;
+  }
+
+  /**
+   * Add multiple document chunks at once
+   * @param {Array} docs - Array of documents with id, content, and metadata
+   */
+  async addDocuments(docs) {
+    const promises = docs.map(doc => this.addDocument(doc.id, doc.content, doc.metadata));
+    return Promise.all(promises);
+  }
+
+  /**
+   * Search for relevant documents based on query
+   * @param {string} query - Query to search for
+   * @param {number} topK - Number of top results to return (default 5)
+   * @returns {Array} Array of relevant documents with similarity scores
+   */
+  async similaritySearch(query, topK = 5) {
+    // Create embedding for the query
+    const queryEmbedding = await createEmbedding(query);
+
+    // Calculate cosine similarity between query and all documents
+    const similarities = this.documents.map(doc => {
+      const similarity = this.cosineSimilarity(queryEmbedding, doc.embedding);
+      return {
+        ...doc,
+        similarity
+      };
+    });
+
+    // Sort by similarity score (descending) and return top K
+    return similarities
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, topK);
+  }
+
+  /**
+   * Calculate cosine similarity between two vectors
+   * @param {Array} vecA - First vector
+   * @param {Array} vecB - Second vector
+   * @returns {number} Cosine similarity score
+   */
+  cosineSimilarity(vecA, vecB) {
+    if (vecA.length !== vecB.length) {
+      throw new Error('Vectors must have the same length');
+    }
+
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+
+    for (let i = 0; i < vecA.length; i++) {
+      dotProduct += vecA[i] * vecB[i];
+      normA += Math.pow(vecA[i], 2);
+      normB += Math.pow(vecB[i], 2);
+    }
+
+    if (normA === 0 || normB === 0) {
+      return 0;
+    }
+
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  }
+
+  /**
+   * Get document by ID
+   * @param {string} id - Document ID
+   * @returns {Object} Document object
+   */
+  getDocument(id) {
+    return this.index[id];
+  }
+
+  /**
+   * Clear all documents from the store
+   */
+  clear() {
+    this.documents = [];
+    this.index = {};
+  }
+
+  /**
+   * Get the number of documents in the store
+   */
+  size() {
+    return this.documents.length;
+  }
+}
+
+// Create a singleton instance
+const vectorStore = new VectorStore();
+
+export { VectorStore };
+export default vectorStore;

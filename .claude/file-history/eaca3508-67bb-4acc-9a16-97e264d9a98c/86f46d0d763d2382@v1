@@ -1,0 +1,80 @@
+# RAG Chatbot Integration for Physical AI & Humanoid Robotics Textbook
+
+This directory contains the complete implementation of a Retrieval-Augmented Generation (RAG) chatbot integrated with the Physical AI & Humanoid Robotics textbook.
+
+## Overview
+
+The RAG system enables users to ask questions about the textbook content and receive accurate, context-aware responses with citations to specific sections of the textbook.
+
+## Features
+
+- **Document Parsing**: Automatically parses all textbook markdown files
+- **Semantic Search**: Uses vector embeddings to find relevant content
+- **Chat Interface**: React component for natural conversation
+- **Source Citations**: Provides references to specific textbook sections
+- **Full Textbook Coverage**: Includes all 4 modules and 19 content files
+
+## Architecture
+
+```
+api/rag/                    # API endpoints
+├── index.js               # Main API router
+├── search.js              # Search and indexing functionality
+src/utils/rag/            # Core utilities
+├── document-parser.js     # Parse textbook markdown files
+├── vector-store.js        # Vector storage and similarity search
+├── embedding-generator.js # Create text embeddings
+src/components/rag/       # Frontend components
+└── ChatInterface.jsx     # Chat interface component
+docs/rag-chatbot.md       # Docusaurus page with chat interface
+scripts/test-rag.js       # Test script
+```
+
+## How It Works
+
+1. **Indexing**: The system parses all textbook markdown files and creates vector embeddings
+2. **Storage**: Document chunks are stored in an in-memory vector store with metadata
+3. **Query Processing**: User questions are converted to embeddings and compared to stored content
+4. **Response Generation**: Relevant content is retrieved and used to generate contextual responses
+5. **Presentation**: Results are displayed with source citations
+
+## Setup
+
+The system is already integrated with the Docusaurus textbook. To run:
+
+1. Start the development server: `npm run start`
+2. Navigate to the RAG Chatbot page in the sidebar
+3. Ask questions about the textbook content
+
+## API Endpoints
+
+- `POST /api/rag/search` - Search for information in the textbook
+- `POST /api/rag/index` - Re-index all documents
+
+## Customization
+
+To use with a real embedding service (OpenAI, etc.) or vector database (Pinecone, etc.), replace the mock implementations in:
+
+- `src/utils/rag/embedding-generator.js`
+- `src/utils/rag/vector-store.js`
+
+## Testing
+
+Run the test suite with:
+```bash
+node scripts/test-rag.js
+```
+
+## Integration
+
+The chatbot is integrated as a Docusaurus page at `/rag-chatbot` and can be accessed through the sidebar navigation.
+
+## Next Steps
+
+For production use, consider:
+
+1. Replacing mock embeddings with real API calls (e.g., OpenAI embeddings)
+2. Using a proper vector database (e.g., Pinecone, Weaviate, Supabase)
+3. Adding rate limiting and caching
+4. Implementing more sophisticated response generation
+5. Adding analytics and usage tracking

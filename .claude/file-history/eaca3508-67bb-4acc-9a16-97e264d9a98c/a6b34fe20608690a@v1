@@ -1,0 +1,199 @@
+// document-parser.js
+// Utility for parsing textbook markdown content for RAG system
+
+import fs from 'fs/promises';
+import path from 'path';
+import { createMarkdownProcessor } from './markdown-processor.js';
+
+/**
+ * Parse all textbook markdown files and extract content with metadata
+ * @returns {Promise<Array>} Array of parsed documents with content and metadata
+ */
+export async function parseTextbookDocuments() {
+  const docsDir = path.join(process.cwd(), 'docs');
+  const documents = [];
+
+  // Define the modules to process
+  const modules = [
+    'module-1-ros2',
+    'module-2-digital-twin',
+    'module-3-nvidia-isaac',
+    'module-4-vision-language-action'
+  ];
+
+  for (const module of modules) {
+    const modulePath = path.join(docsDir, module);
+
+    try {
+      const files = await fs.readdir(modulePath);
+
+      for (const file of files) {
+        if (file.endsWith('.md')) {
+          const filePath = path.join(modulePath, file);
+          const content = await fs.readFile(filePath, 'utf8');
+
+          // Extract frontmatter and content
+          const parsed = await createMarkdownProcessor(content);
+
+          documents.push({
+            id: `${module}/${file}`,
+            module: module,
+            filename: file,
+            content: parsed.content,
+            frontmatter: parsed.frontmatter,
+            title: parsed.frontmatter?.title || file.replace('.md', ''),
+            source: filePath,
+            createdAt: new Date().toISOString()
+          });
+        }
+      }
+    } catch (error) {
+      console.warn(`Could not read module directory ${module}:`, error.message);
+    }
+  }
+
+  // Also include intro and other top-level docs
+  try {
+    const introPath = path.join(docsDir, 'intro.md');
+    const introContent = await fs.readFile(introPath, 'utf8');
+    const parsed = await createMarkdownProcessor(introContent);
+
+    documents.push({
+      id: 'intro/intro.md',
+      module: 'intro',
+      filename: 'intro.md',
+      content: parsed.content,
+      frontmatter: parsed.frontmatter,
+      title: parsed.frontmatter?.title || 'Introduction',
+      source: introPath,
+      createdAt: new Date().toISOString()
+    });
+  } catch (error) {
+    console.warn('Could not read intro.md:', error.message);
+  }
+
+  return documents;
+}
+
+/**
+ * Process markdown content to extract text and metadata
+ * @param {string} markdownContent - Raw markdown content
+ * @returns {Object} Processed content with frontmatter and text
+ */
+export async function createMarkdownProcessor(markdownContent) {
+  // Extract frontmatter (between --- delimiters)
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n?---\s*\n/;
+  const frontmatterMatch = markdownContent.match(frontmatterRegex);
+
+  let frontmatter = {};
+  let content = markdownContent;
+
+  if (frontmatterMatch) {
+    const frontmatterStr = frontmatterMatch[1];
+    content = markdownContent.replace(frontmatterMatch[0], '');
+
+    // Simple frontmatter parsing (for basic key-value pairs)
+    const lines = frontmatterStr.split('\n');
+    for (const line of lines) {
+      const colonIndex = line.indexOf(':');
+      if (colonIndex > 0) {
+        const key = line.substring(0, colonIndex).trim();
+        const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
+        frontmatter[key] = value;
+      }
+    }
+  }
+
+  // Remove markdown formatting to get clean text
+  let cleanText = content
+    // Remove headers
+    .replace(/^#{1,6}\s+(.*)/gm, '$1')
+    // Remove emphasis
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    // Remove links [text](url)
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove images
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, '')
+    // Remove inline code
+    .replace(/`([^`]+)`/g, '$1')
+    // Remove blockquotes
+    .replace(/^>\s+/gm, '')
+    // Remove lists
+    .replace(/^[\s\t]*[*+-]\s+/gm, '')
+    .replace(/^[\s\t]*\d+\.\s+/gm, '')
+    // Clean up extra whitespace
+    .replace(/\n\s+\n/g, '\n\n')
+    .trim();
+
+  return {
+    frontmatter,
+    content: cleanText
+  };
+}
+
+/**
+ * Split document content into chunks for embedding
+ * @param {string} content - Document content to split
+ * @param {number} chunkSize - Maximum chunk size in characters (default 1000)
+ * @param {number} overlap - Overlap between chunks in characters (default 200)
+ * @returns {Array<string>} Array of content chunks
+ */
+export function chunkDocument(content, chunkSize = 1000, overlap = 200) {
+  const chunks = [];
+  const paragraphs = content.split(/\n\s*\n/); // Split by paragraph breaks
+
+  let currentChunk = '';
+
+  for (const paragraph of paragraphs) {
+    // If adding this paragraph would exceed chunk size
+    if (currentChunk.length + paragraph.length > chunkSize && currentChunk.length > 0) {
+      // Save current chunk
+      chunks.push(currentChunk.trim());
+
+      // Start new chunk with overlap from previous chunk
+      if (overlap > 0) {
+        const overlapText = currentChunk.slice(-overlap);
+        currentChunk = overlapText + paragraph;
+      } else {
+        currentChunk = paragraph;
+      }
+    } else {
+      currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+
+      // If current chunk is getting too large, split it by sentences
+      if (currentChunk.length > chunkSize) {
+        const sentences = currentChunk.match(/[^\.!?]+[\.!?]+/g) || [currentChunk];
+        let tempChunk = '';
+
+        for (const sentence of sentences) {
+          if (tempChunk.length + sentence.length > chunkSize && tempChunk.length > 0) {
+            chunks.push(tempChunk.trim());
+            tempChunk = sentence;
+          } else {
+            tempChunk += sentence;
+          }
+        }
+
+        currentChunk = tempChunk;
+      }
+    }
+  }
+
+  // Add the last chunk if it has content
+  if (currentChunk.trim().length > 0) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks;
+}
+
+export default {
+  parseTextbookDocuments,
+  createMarkdownProcessor,
+  chunkDocument
+};

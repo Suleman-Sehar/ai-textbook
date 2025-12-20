@@ -1,0 +1,126 @@
+// api/rag/search.js
+// API endpoint for RAG search functionality
+
+import { parseTextbookDocuments, chunkDocument } from '../../src/utils/rag/document-parser.js';
+import vectorStore from '../../src/utils/rag/vector-store.js';
+
+let isInitialized = false;
+
+/**
+ * Initialize the RAG system by parsing documents and creating embeddings
+ */
+export async function initializeRAGSystem() {
+  if (isInitialized) {
+    console.log('RAG system already initialized');
+    return;
+  }
+
+  console.log('Initializing RAG system...');
+
+  // Parse all textbook documents
+  const documents = await parseTextbookDocuments();
+  console.log(`Parsed ${documents.length} documents`);
+
+  // Clear existing documents
+  vectorStore.clear();
+
+  // Process each document and add to vector store
+  for (const doc of documents) {
+    // Chunk the document content
+    const chunks = chunkDocument(doc.content, 1000, 200);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunkId = `${doc.id}-chunk-${i}`;
+      await vectorStore.addDocument(chunkId, chunks[i], {
+        source: doc.id,
+        title: doc.title,
+        module: doc.module,
+        filename: doc.filename,
+        chunkIndex: i,
+        totalChunks: chunks.length
+      });
+    }
+  }
+
+  console.log(`Added ${vectorStore.size()} document chunks to vector store`);
+  isInitialized = true;
+}
+
+/**
+ * Search endpoint handler
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+export async function searchHandler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { query, topK = 5 } = req.body;
+
+    if (!query) {
+      return res.status(400).json({ error: 'Query is required' });
+    }
+
+    // Initialize RAG system if not already done
+    if (!isInitialized) {
+      await initializeRAGSystem();
+    }
+
+    // Perform similarity search
+    const results = await vectorStore.similaritySearch(query, topK);
+
+    // Format results
+    const formattedResults = results.map(result => ({
+      id: result.id,
+      content: result.content,
+      similarity: result.similarity,
+      metadata: result.metadata
+    }));
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({
+      query,
+      results: formattedResults,
+      count: formattedResults.length
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
+ * Index endpoint handler (to re-index documents)
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+export async function indexHandler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    // Re-initialize the RAG system
+    await initializeRAGSystem();
+
+    res.status(200).json({
+      message: 'Document indexing completed successfully',
+      documentCount: vectorStore.size()
+    });
+  } catch (error) {
+    console.error('Indexing error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+// For testing purposes, initialize on module load
+if (process.env.NODE_ENV !== 'test') {
+  initializeRAGSystem().catch(console.error);
+}
+
+export default {
+  searchHandler,
+  indexHandler
+};

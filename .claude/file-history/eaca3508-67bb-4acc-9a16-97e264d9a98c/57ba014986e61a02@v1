@@ -1,0 +1,82 @@
+// embedding-generator.js
+// Mock embedding generator for RAG system (to be replaced with real embeddings)
+
+/**
+ * Generate embedding for text content
+ * @param {string} text - Text to generate embedding for
+ * @returns {Promise<Array>} Array of embedding values
+ */
+export async function createEmbedding(text) {
+  // In a real implementation, this would call an embedding API like OpenAI
+  // For now, we'll create a deterministic mock embedding based on the text
+  return createMockEmbedding(text);
+}
+
+/**
+ * Create a mock embedding based on text content
+ * @param {string} text - Text to create embedding for
+ * @returns {Array} Array of 1536 mock embedding values (matching OpenAI's text-embedding-ada-002 dimensions)
+ */
+function createMockEmbedding(text) {
+  // Create a deterministic hash-based embedding
+  const embedding = new Array(1536).fill(0);
+
+  // Use text content to influence embedding values
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i);
+    const index = i % 1536;
+    embedding[index] = (embedding[index] + charCode * 0.01) % 2 - 1; // Normalize to [-1, 1]
+  }
+
+  // Add some more variation based on word patterns
+  const words = text.toLowerCase().split(/\W+/);
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    if (word.length > 0) {
+      const hash = simpleHash(word);
+      const index = hash % 1536;
+      embedding[index] = Math.sin(embedding[index] * Math.PI) * (i % 2 === 0 ? 1 : -1);
+    }
+  }
+
+  // Normalize the embedding
+  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+  if (magnitude > 0) {
+    return embedding.map(val => val / magnitude);
+  }
+
+  return embedding;
+}
+
+/**
+ * Simple hash function for deterministic results
+ * @param {string} str - String to hash
+ * @returns {number} Hash value
+ */
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Generate embeddings for multiple texts
+ * @param {Array<string>} texts - Array of texts to generate embeddings for
+ * @returns {Promise<Array>} Array of embedding arrays
+ */
+export async function createEmbeddings(texts) {
+  const embeddings = [];
+  for (const text of texts) {
+    embeddings.push(await createEmbedding(text));
+  }
+  return embeddings;
+}
+
+export default {
+  createEmbedding,
+  createEmbeddings
+};

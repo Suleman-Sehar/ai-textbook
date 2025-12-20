@@ -1,0 +1,62 @@
+{
+  "name": "physical-ai-textbook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "start:dev": "docusaurus start --port 3000",
+    "build": "docusaurus build",
+    "build:check": "npm run build && echo 'Build completed successfully'",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "serve:build": "npm run build && docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
+    "type-check": "tsc --noEmit",
+    "test": "echo 'No tests configured' && exit 0",
+    "validate": "npm run type-check && npm run lint",
+    "prebuild": "npm run validate",
+    "postbuild": "echo 'Build completed successfully at $(date)'",
+    "prestart": "npm run validate",
+    "pre-commit": "npm run validate"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.9.2",
+    "@docusaurus/preset-classic": "^3.9.2",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/eslint-plugin": "^3.9.2",
+    "@docusaurus/module-type-aliases": "^3.9.2",
+    "@docusaurus/tsconfig": "^3.9.2",
+    "@docusaurus/types": "^3.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0"
+  }
+}

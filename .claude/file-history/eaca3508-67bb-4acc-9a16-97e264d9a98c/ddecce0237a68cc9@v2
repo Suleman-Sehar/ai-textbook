@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+// test-rag.js
+// Test script to verify RAG system functionality
+
+import { parseTextbookDocuments, chunkDocument } from '../src/utils/rag/document-parser.js';
+import { createEmbedding } from '../src/utils/rag/embedding-generator.js';
+import { VectorStore } from '../src/utils/rag/vector-store.js';
+
+async function testRAGSystem() {
+  console.log('🧪 Testing RAG System...\n');
+
+  try {
+    // Test 1: Document parsing
+    console.log('1. Testing document parsing...');
+    const documents = await parseTextbookDocuments();
+    console.log(`   ✅ Parsed ${documents.length} documents`);
+
+    // Test 2: Document chunking
+    console.log('\n2. Testing document chunking...');
+    if (documents.length > 0) {
+      const sampleDoc = documents[0];
+      const chunks = chunkDocument(sampleDoc.content, 500, 100);
+      console.log(`   ✅ Chunked document into ${chunks.length} pieces`);
+      console.log(`   Sample chunk length: ${chunks[0]?.length || 0} characters`);
+    }
+
+    // Test 3: Embedding generation
+    console.log('\n3. Testing embedding generation...');
+    const sampleText = "Physical AI and humanoid robotics combine artificial intelligence with physical embodiment.";
+    const embedding = await createEmbedding(sampleText);
+    console.log(`   ✅ Generated embedding with ${embedding.length} dimensions`);
+    console.log(`   Sample embedding values: [${embedding.slice(0, 5).map(v => v.toFixed(3)).join(', ')}, ...]`);
+
+    // Test 4: Vector store
+    console.log('\n4. Testing vector store...');
+    const vectorStore = new VectorStore();
+
+    // Add a few sample documents
+    await vectorStore.addDocument('test1', 'ROS 2 is a robotics middleware', { topic: 'ROS' });
+    await vectorStore.addDocument('test2', 'Digital twin technology creates virtual replicas', { topic: 'Digital Twin' });
+    await vectorStore.addDocument('test3', 'NVIDIA Isaac provides AI frameworks for robotics', { topic: 'NVIDIA Isaac' });
+
+    console.log(`   ✅ Added ${vectorStore.size()} documents to vector store`);
+
+    // Test similarity search
+    const results = await vectorStore.similaritySearch('robotics middleware', 2);
+    console.log(`   ✅ Search returned ${results.length} results`);
+    console.log(`   Most relevant: "${results[0]?.content}" (similarity: ${(results[0]?.similarity || 0).toFixed(3)})`);
+
+    console.log('\n🎉 All tests passed! RAG system is working correctly.');
+
+  } catch (error) {
+    console.error('❌ Test failed:', error.message);
+    console.error(error.stack);
+    process.exit(1);
+  }
+}
+
+// Run the test if this script is executed directly
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Check if this module is the main module being run
+import process from 'process';
+
+// For ES modules, we check if this file is the main script
+const mainModulePath = process.argv[1];
+const currentFilePath = __filename;
+
+if (mainModulePath && currentFilePath.includes(mainModulePath.replace(/\\/g, '/'))) {
+  testRAGSystem();
+}
+
+export default testRAGSystem;

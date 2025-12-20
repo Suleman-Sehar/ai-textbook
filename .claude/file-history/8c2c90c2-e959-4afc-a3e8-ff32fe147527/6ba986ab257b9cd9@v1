@@ -1,0 +1,69 @@
+# Docusaurus build output
+build/
+dist/
+.out/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.*
+.pnp.js
+
+# dotenv environment variables file
+.env*.local
+.env*.backup
+.env*.tmp
+.env.local
+.env.backup
+.env.tmp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary folders
+tmp/
+temp/
+
+# System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docusaurus specific
+.cache/
+.docusaurus/
+.vercel/
+api-extractor/

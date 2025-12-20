@@ -1,0 +1,1545 @@
+2025-12-18T15:55:35.743Z [DEBUG] Watching for changes in setting files /tmp/claude-settings-b2500704-4fe6-4e30-9712-acc4a775d7d3.json...
+2025-12-18T15:55:35.758Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2025-12-18T15:55:35.758Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2025-12-18T15:55:35.758Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2025-12-18T15:55:35.762Z [DEBUG] LSP server manager initialized successfully
+2025-12-18T15:55:35.762Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2025-12-18T15:55:35.832Z [DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+2025-12-18T15:55:35.840Z [DEBUG] Stats cache is up to date
+2025-12-18T15:55:35.857Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (16.0ms): ldd /bin/ls 2>/dev/null
+2025-12-18T15:55:35.867Z [DEBUG] Loading skills from directories: managed=/etc/claude-code/.claude/skills, user=/home/ai-textbook/.claude/skills, project=[]
+2025-12-18T15:55:36.185Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (309.9ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:36.195Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.0ms)
+2025-12-18T15:55:36.218Z [DEBUG] installed_plugins.json doesn't exist, returning empty V2 object
+2025-12-18T15:55:36.219Z [DEBUG] Official marketplace auto-install already attempted, skipping
+2025-12-18T15:55:36.320Z [DEBUG] Creating shell snapshot for bash (/bin/bash)
+2025-12-18T15:55:36.320Z [DEBUG] Looking for shell config file: /home/ai-textbook/.bashrc
+2025-12-18T15:55:36.320Z [DEBUG] Snapshots directory: /home/ai-textbook/.claude/shell-snapshots
+2025-12-18T15:55:36.322Z [DEBUG] Creating snapshot at: /home/ai-textbook/.claude/shell-snapshots/snapshot-bash-1766073336320-vhgzyo.sh
+2025-12-18T15:55:36.322Z [DEBUG] Shell binary exists: true
+2025-12-18T15:55:36.322Z [DEBUG] Execution timeout: 10000ms
+2025-12-18T15:55:36.327Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073336327
+2025-12-18T15:55:36.342Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (14.7ms)
+2025-12-18T15:55:36.342Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-18T15:55:36.342Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073336327 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:55:36.343Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:55:36.348Z [DEBUG] Auto-updating 1 installed marketplaces in background
+2025-12-18T15:55:36.349Z [DEBUG] Auto-updating marketplace "claude-plugins-official"
+2025-12-18T15:55:36.360Z [DEBUG] getPluginSkills: Processing 0 enabled plugins
+2025-12-18T15:55:36.360Z [DEBUG] Total plugin skills loaded: 0
+2025-12-18T15:55:36.360Z [DEBUG] Total plugin commands loaded: 0
+2025-12-18T15:55:36.360Z [DEBUG] Registered 0 hooks from 0 plugins
+2025-12-18T15:55:36.369Z [DEBUG] Loaded 0 unique skills (managed: 0, user: 0, project: 0, duplicates removed: 0)
+2025-12-18T15:55:36.369Z [DEBUG] getSkills returning: 0 skill dir commands, 0 plugin skills
+2025-12-18T15:55:36.369Z [DEBUG] Total plugin agents loaded: 0
+2025-12-18T15:55:36.385Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (6.3ms)
+2025-12-18T15:55:36.405Z [DEBUG] Git remote URL: null
+2025-12-18T15:55:36.405Z [DEBUG] No git remote URL found
+2025-12-18T15:55:36.405Z [DEBUG] Not in a GitHub repository, skipping path mapping update
+2025-12-18T15:55:36.417Z [DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/usr/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg)
+2025-12-18T15:55:36.429Z [DEBUG] Shell snapshot created successfully (3853 bytes)
+2025-12-18T15:55:37.305Z [ERROR] Error streaming, falling back to non-streaming mode: 401 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CWERbs4UEitu6ZMwwRwbj"}
+2025-12-18T15:55:37.857Z [ERROR] Error in non-streaming fallback: 401 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CWERbvFDCRbgJgu3Yz2HH"}
+2025-12-18T15:55:37.858Z [ERROR] Error: Error: 401 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CWERbvFDCRbgJgu3Yz2HH"}
+    at I9.generate (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:458:10414)
+    at pR.makeStatusError (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:795:2195)
+    at pR.makeRequest (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:795:5419)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async feA.model (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4235:11207)
+    at async feA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:1220:18703)
+    at async xg2 (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4235:11361)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4235:3545
+    at async yd1 (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:945:2037)
+    at async Wh (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4235:3516)
+2025-12-18T15:55:38.418Z [DEBUG] MCP server "context7": Starting connection with timeout of 30000ms
+2025-12-18T15:55:38.446Z [DEBUG] Initialized versioned plugins system with 0 plugins
+2025-12-18T15:55:38.452Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073338452
+2025-12-18T15:55:38.452Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:55:38.457Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.4ms)
+2025-12-18T15:55:38.457Z [DEBUG] Temp file written successfully, size: 54330 bytes
+2025-12-18T15:55:38.457Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:55:38.457Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073338452 to /home/ai-textbook/.claude.json
+2025-12-18T15:55:38.457Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T15:55:38.468Z [DEBUG] Skipping SessionStart:startup hook execution - workspace trust not accepted
+2025-12-18T15:55:38.676Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073338676
+2025-12-18T15:55:38.676Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:55:38.686Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (10.3ms)
+2025-12-18T15:55:38.686Z [DEBUG] Temp file written successfully, size: 54254 bytes
+2025-12-18T15:55:38.687Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:55:38.687Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073338676 to /home/ai-textbook/.claude.json
+2025-12-18T15:55:38.687Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T15:55:39.100Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (386.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:39.121Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (7.9ms)
+2025-12-18T15:55:39.129Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.3ms)
+2025-12-18T15:55:39.145Z [DEBUG] performStartupChecks called
+2025-12-18T15:55:39.146Z [DEBUG] Trust not accepted for current directory - skipping plugin installations
+2025-12-18T15:55:39.570Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (422.5ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:39.597Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.3ms)
+2025-12-18T15:55:39.602Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.0ms)
+2025-12-18T15:55:39.633Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073339633
+2025-12-18T15:55:39.633Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:55:39.649Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (16.3ms)
+2025-12-18T15:55:39.649Z [DEBUG] Temp file written successfully, size: 54330 bytes
+2025-12-18T15:55:39.649Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:55:39.649Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073339633 to /home/ai-textbook/.claude.json
+2025-12-18T15:55:39.650Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T15:55:39.999Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (345.8ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:40.030Z [DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+2025-12-18T15:55:40.048Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (10.2ms)
+2025-12-18T15:55:40.048Z [DEBUG] Successfully refreshed marketplace: claude-plugins-official
+2025-12-18T15:55:40.048Z [DEBUG] Successfully auto-updated marketplace "claude-plugins-official"
+2025-12-18T15:55:40.053Z [DEBUG] Skipping SubagentStart:Explore hook execution - workspace trust not accepted
+2025-12-18T15:55:40.065Z [DEBUG] Skipping SubagentStart:Plan hook execution - workspace trust not accepted
+2025-12-18T15:55:40.075Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T15:55:40.104Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (10.6ms)
+2025-12-18T15:55:40.198Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073340198
+2025-12-18T15:55:40.198Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:55:40.228Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (29.9ms)
+2025-12-18T15:55:40.228Z [DEBUG] Temp file written successfully, size: 54330 bytes
+2025-12-18T15:55:40.228Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:55:40.228Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073340198 to /home/ai-textbook/.claude.json
+2025-12-18T15:55:40.228Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T15:55:40.423Z [ERROR] AxiosError: AxiosError: Request failed with status code 401
+    at vj (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:56:1137)
+    at IncomingMessage.<anonymous> (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:57:9852)
+    at IncomingMessage.emit (node:events:536:35)
+    at IncomingMessage.emit (node:domain:489:12)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at FKA.request (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:59:2130)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async myA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:82:2905)
+    at async CG5 (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2671:51010)
+2025-12-18T15:55:41.394Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (363.0ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:42.090Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T15:55:42.090Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T15:55:42.843Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (410.3ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:42.868Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (6.6ms)
+2025-12-18T15:55:42.879Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.0ms)
+2025-12-18T15:55:42.884Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.2ms)
+2025-12-18T15:55:42.893Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:55:43.378Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:55:43.620Z [ERROR] MCP server "context7" Server stderr: WARNING: Using default CLIENT_IP_ENCRYPTION_KEY.
+2025-12-18T15:55:43.814Z [ERROR] MCP server "context7" Server stderr: Context7 Documentation MCP Server running on stdio
+2025-12-18T15:55:43.828Z [DEBUG] MCP server "context7": Successfully connected to stdio server in 5442ms
+2025-12-18T15:55:43.828Z [DEBUG] MCP server "context7": Connection established with capabilities: {"hasTools":true,"hasPrompts":false,"hasResources":false,"serverVersion":{"name":"Context7","version":"1.0.13"}}
+2025-12-18T15:55:44.203Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (318.5ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:44.229Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (6.2ms)
+2025-12-18T15:55:44.235Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.9ms)
+2025-12-18T15:55:44.885Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T15_55_42_356Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T15:55:45.612Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (376.8ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:45.903Z [DEBUG] Skipping SubagentStop hook execution - workspace trust not accepted
+2025-12-18T15:55:45.930Z [DEBUG] Skipping SubagentStop hook execution - workspace trust not accepted
+2025-12-18T15:55:46.983Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (342.0ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:48.351Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (341.0ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:49.674Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (294.6ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:51.016Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (310.9ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:51.038Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.1ms)
+2025-12-18T15:55:52.394Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (350.2ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:53.845Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (423.2ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:55.192Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (320.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:55.204Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.7ms)
+2025-12-18T15:55:55.224Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.7ms)
+2025-12-18T15:55:55.249Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:55:55.249Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:55:55.249Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:55:55.249Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:55:55.275Z [DEBUG] Skipping UserPromptSubmit hook execution - workspace trust not accepted
+2025-12-18T15:55:55.280Z [DEBUG] FileHistory: Added snapshot for 5ddfbd12-0c88-499a-b4b7-f48eb0c5f995, tracking 0 files
+2025-12-18T15:55:55.309Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-18T15:55:55.326Z [DEBUG] Slash commands included in SlashCommand tool: /sp.phr, /sp.plan, /sp.git.commit_pr, /sp.clarify, /sp.tasks, /sp.specify, /sp.analyze, /sp.adr, /sp.checklist, /sp.constitution, /sp.implement
+2025-12-18T15:55:55.327Z [DEBUG] Skills and commands included in Skill tool:
+2025-12-18T15:55:56.522Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (296.9ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:56.817Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:55:57.109Z [ERROR] SyntaxError: SyntaxError: Expected property name or '}' in JSON at position 1
+    at JSON.parse (<anonymous>)
+    at file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:75:715
+    at B (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:8:6526)
+    at yWB (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:946:2834)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-18T15:55:57.899Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (349.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:59.235Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (306.2ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:55:59.246Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.2ms)
+2025-12-18T15:56:00.594Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (323.6ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:01.095Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:01.917Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (301.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:03.264Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (318.6ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:03.381Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T15:56:03.382Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:03.416Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073363416
+2025-12-18T15:56:03.416Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:56:03.436Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (19.7ms)
+2025-12-18T15:56:03.436Z [DEBUG] Temp file written successfully, size: 762 bytes
+2025-12-18T15:56:03.436Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:56:03.436Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073363416 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:56:03.436Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:56:03.445Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:03.465Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:03.465Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:03.465Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:03.465Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:04.588Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (296.4ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:04.613Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.3ms)
+2025-12-18T15:56:04.620Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (7.1ms)
+2025-12-18T15:56:05.914Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (293.4ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:07.238Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (293.3ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:07.345Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:08.557Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (288.3ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:08.988Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T15:56:08.989Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:09.025Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073369025
+2025-12-18T15:56:09.025Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:56:09.038Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (12.5ms)
+2025-12-18T15:56:09.038Z [DEBUG] Temp file written successfully, size: 766 bytes
+2025-12-18T15:56:09.038Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:56:09.038Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073369025 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:56:09.038Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:56:09.049Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:09.069Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:09.069Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:09.069Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:09.069Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:09.887Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (299.1ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T15:56:11.035Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:11.299Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:56:11.300Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:56:11.333Z [DEBUG] tree-sitter: WASM files not found
+2025-12-18T15:56:11.355Z [DEBUG] No session environment scripts found
+2025-12-18T15:56:11.463Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:56:11.488Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:11.488Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:11.488Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:11.488Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:12.407Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:15.950Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:16.631Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:16.631Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:16.673Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:16.693Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:16.693Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:16.693Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:16.693Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:24.182Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:25.052Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:25.053Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:25.094Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:25.114Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:25.114Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:25.114Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:25.114Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:28.025Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:28.668Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:28.668Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:28.703Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:28.724Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:28.724Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:28.724Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:28.724Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:36.813Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:37.854Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:37.855Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:37.899Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:37.923Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:37.923Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:37.923Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:37.923Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:41.397Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:41.785Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:41.786Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:41.829Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:41.852Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:41.852Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:41.852Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:41.852Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:44.476Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:44.861Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:56:44.862Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:44.900Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:56:44.924Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:44.924Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:44.924Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:44.924Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:56:52.620Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:56:56.466Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T15:56:56.466Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:56.506Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073416506
+2025-12-18T15:56:56.506Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:56:56.517Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (11.5ms)
+2025-12-18T15:56:56.517Z [DEBUG] Temp file written successfully, size: 768 bytes
+2025-12-18T15:56:56.517Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:56:56.517Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073416506 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:56:56.517Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:56:56.526Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:56:56.544Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:56:56.544Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:56:56.544Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:56:56.544Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:00.206Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:01.392Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:01.392Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:01.557Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:01.578Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:01.578Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:01.578Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:01.578Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:02.608Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:07.483Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:08.229Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:08.230Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:08.428Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:08.453Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:08.453Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:08.453Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:08.453Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:10.921Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:10.929Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:11.150Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:11.151Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:11.334Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:11.359Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:11.359Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:11.359Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:11.359Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:12.152Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:14.118Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:14.690Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:14.691Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:14.865Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:14.887Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:14.887Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:14.887Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:14.887Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:15.609Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:17.554Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:17.660Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:17.661Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:17.842Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:17.868Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:17.868Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:17.868Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:17.868Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:19.302Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:21.034Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:22.903Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T15:57:22.904Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:57:22.944Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T15:57:22.975Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:22.975Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:22.975Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:22.975Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:28.451Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:32.380Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T15:57:32.381Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:57:32.415Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073452415
+2025-12-18T15:57:32.415Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:57:32.428Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (12.2ms)
+2025-12-18T15:57:32.428Z [DEBUG] Temp file written successfully, size: 772 bytes
+2025-12-18T15:57:32.428Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:57:32.428Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073452415 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:57:32.428Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:57:32.437Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:57:32.456Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:32.456Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:32.456Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:32.456Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:36.153Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:36.829Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:57:36.830Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:37.671Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:37.683Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npm install"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T15:57:37.718Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T15:57:37.719Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:43.728Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T15:57:46.598Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T15:57:48.404Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T15:57:48.404Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T15:57:49.606Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T15_57_48_749Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T15:57:51.302Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:57:51.333Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:51.333Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:51.333Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:51.333Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:57:53.302Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:56.067Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:57:58.875Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T15:57:58.876Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:57:58.925Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073478925
+2025-12-18T15:57:58.925Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:57:58.936Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (10.5ms)
+2025-12-18T15:57:58.936Z [DEBUG] Temp file written successfully, size: 774 bytes
+2025-12-18T15:57:58.936Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:57:58.936Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073478925 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T15:57:58.936Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T15:57:58.948Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T15:57:58.977Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:57:58.977Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:57:58.977Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:57:58.977Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:58:03.098Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:03.582Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:58:03.583Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:04.345Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:04.415Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npm run start"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T15:58:04.437Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T15:58:04.438Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:10.447Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T15:58:32.608Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:32.654Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:58:32.654Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:58:32.654Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:58:32.654Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:58:32.798Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T15:58:34.665Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:35.237Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T15:58:35.237Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T15:58:36.719Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T15_58_35_674Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T15:58:37.414Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:37.987Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (8.1ms)
+2025-12-18T15:58:38.727Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:58:38.728Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:39.657Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:40.340Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:40.342Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:40.370Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -I http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T15:58:40.429Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T15:58:40.429Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:44.312Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T15:58:46.083Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T15:58:46.083Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T15:58:47.165Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073527165
+2025-12-18T15:58:47.165Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T15:58:47.179Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (13.9ms)
+2025-12-18T15:58:47.179Z [DEBUG] Temp file written successfully, size: 54330 bytes
+2025-12-18T15:58:47.179Z [DEBUG] Applied original permissions to temp file
+2025-12-18T15:58:47.179Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073527165 to /home/ai-textbook/.claude.json
+2025-12-18T15:58:47.180Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T15:58:47.640Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T15_58_46_442Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T15:58:54.258Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:58:54.291Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:58:54.291Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:58:54.291Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:58:54.291Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:58:56.233Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:57.401Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:58:58.426Z [DEBUG] executePreToolHooks called for tool: TaskOutput
+2025-12-18T15:58:58.427Z [DEBUG] Skipping PreToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T15:58:58.489Z [DEBUG] Skipping PostToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T15:58:58.514Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:58:58.514Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:58:58.514Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:58:58.514Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:59:00.897Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:59:02.358Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:59:02.359Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:59:03.218Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:59:03.316Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "lsof -i :3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T15:59:03.358Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T15:59:03.359Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T15:59:09.365Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T15:59:16.337Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:59:16.365Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T15:59:16.365Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T15:59:16.365Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T15:59:16.365Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T15:59:16.412Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T15:59:17.695Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T15:59:17.695Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T15:59:17.742Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:59:18.616Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T15_59_17_991Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T15:59:19.757Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:59:21.181Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T15:59:21.182Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T15:59:22.039Z [DEBUG] Stream started - received first chunk
+2025-12-18T15:59:22.120Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T15:59:22.146Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T15:59:22.147Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T15:59:28.154Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:00:30.371Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:30.406Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:00:30.406Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:00:30.406Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:00:30.406Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:00:30.452Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:00:31.570Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:00:31.570Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:00:31.877Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:32.494Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_00_31_860Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:00:33.620Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:34.619Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:00:34.620Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:35.449Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:35.546Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000/docs/intro"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:00:35.578Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:00:35.579Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:37.154Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:37.180Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:00:37.180Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:00:37.180Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:00:37.180Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:00:37.251Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:00:37.880Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:38.682Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:00:38.683Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:00:39.519Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:39.617Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_00_38_994Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:00:40.798Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:00:40.799Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:41.589Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:00:41.626Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -I http://localhost:3000/nonexistent-page"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:00:41.652Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:00:41.653Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:00:47.668Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:01:11.629Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:01:11.671Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:01:11.671Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:01:11.671Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:01:11.671Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:01:11.728Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:01:13.154Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:01:13.154Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:01:13.703Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:01:15.988Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_01_13_447Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:01:16.107Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:01:19.066Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-18T16:01:19.067Z [DEBUG] Skipping PreToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T16:01:19.099Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073679099
+2025-12-18T16:01:19.099Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:01:19.111Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (11.9ms)
+2025-12-18T16:01:19.111Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-18T16:01:19.111Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:01:19.111Z [DEBUG] Renaming /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json.tmp.15685.1766073679099 to /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json
+2025-12-18T16:01:19.111Z [DEBUG] File /home/ai-textbook/.claude/todos/6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b-agent-6cf6fdd8-e3e6-4ea3-a409-c3964e99f36b.json written atomically
+2025-12-18T16:01:19.118Z [DEBUG] Skipping PostToolUse:TodoWrite hook execution - workspace trust not accepted
+2025-12-18T16:01:19.136Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:01:19.136Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:01:19.136Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:01:19.136Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:01:22.512Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:01:26.804Z [DEBUG] Skipping Stop hook execution - workspace trust not accepted
+2025-12-18T16:01:27.120Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (306.1ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:01:27.445Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (289.1ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:01:27.481Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073687481
+2025-12-18T16:01:27.481Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:01:27.486Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.7ms)
+2025-12-18T16:01:27.486Z [DEBUG] Temp file written successfully, size: 54331 bytes
+2025-12-18T16:01:27.487Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:01:27.487Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073687481 to /home/ai-textbook/.claude.json
+2025-12-18T16:01:27.487Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:01:27.493Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766073687493
+2025-12-18T16:01:27.493Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:01:27.498Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.1ms)
+2025-12-18T16:01:27.498Z [DEBUG] Temp file written successfully, size: 54332 bytes
+2025-12-18T16:01:27.498Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:01:27.498Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766073687493 to /home/ai-textbook/.claude.json
+2025-12-18T16:01:27.498Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:02:27.515Z [DEBUG] Skipping Notification:idle_prompt hook execution - workspace trust not accepted
+2025-12-18T16:03:58.978Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:03:58.978Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:03:58.978Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:03:58.978Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:03:58.989Z [DEBUG] Skipping UserPromptSubmit hook execution - workspace trust not accepted
+2025-12-18T16:03:58.990Z [DEBUG] FileHistory: Making snapshot for message 4a98e367-5af8-4f18-bf7a-be625c5f1f54
+2025-12-18T16:03:58.991Z [DEBUG] FileHistory: Added snapshot for 4a98e367-5af8-4f18-bf7a-be625c5f1f54, tracking 0 files
+2025-12-18T16:04:01.109Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:04:01.311Z [ERROR] SyntaxError: SyntaxError: Expected property name or '}' in JSON at position 1
+    at JSON.parse (<anonymous>)
+    at file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:75:715
+    at B (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:8:6526)
+    at yWB (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:946:2834)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-18T16:04:02.100Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:04:03.986Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:04:03.988Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:04:04.061Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:04:04.092Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:04:04.093Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:04:07.613Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:04:07.647Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:04:07.647Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:04:07.647Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:04:07.647Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:04:07.703Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:04:08.709Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:04:08.709Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:04:09.359Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:04:09.603Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_04_08_987Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:04:09.935Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:04:11.188Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:04:11.189Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:04:11.272Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:04:11.301Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:04:11.302Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:04:17.313Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:05:15.373Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:05:15.411Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:05:15.411Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:05:15.411Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:05:15.411Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:05:15.455Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:05:16.585Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:05:16.585Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:05:17.481Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_05_16_865Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:05:17.495Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:05:18.721Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:05:20.156Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:05:20.157Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:05:20.254Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:05:20.276Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:05:20.276Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:05:26.288Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:06:05.769Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:06:05.802Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:06:05.802Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:06:05.802Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:06:05.802Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:06:05.861Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:06:07.539Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:06:07.539Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:06:07.631Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:06:08.462Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_06_07_825Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:06:10.663Z [ERROR] Error streaming, falling back to non-streaming mode: 500 {"error":{"message":"Error from provider(qwen,qwen3-coder-plus: 500): {\"error\":{\"code\":\"internal_server_error\",\"message\":\"call qwen chat auth error\",\"param\":null,\"type\":\"server_error\"},\"request_id\":\"55e7fadb-aeca-9a41-bc2c-b988541d9256\"}Error: Error from provider(qwen,qwen3-coder-plus: 500): {\"error\":{\"code\":\"internal_server_error\",\"message\":\"call qwen chat auth error\",\"param\":null,\"type\":\"server_error\"},\"request_id\":\"55e7fadb-aeca-9a41-bc2c-b988541d9256\"}\n    at nt (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79940:11)\n    at p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:80000:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"provider_response_error"}}
+2025-12-18T16:06:14.193Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:06:14.194Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:06:14.264Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:06:14.292Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:06:14.293Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:06:20.301Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:06:41.177Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:06:41.218Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:06:41.218Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:06:41.218Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:06:41.218Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:06:41.282Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:06:42.536Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:06:42.536Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:06:42.943Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:06:43.103Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (9.6ms)
+2025-12-18T16:06:44.317Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:06:45.801Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T16:06:45.802Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:06:45.824Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_06_42_808Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:06:45.846Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:06:45.867Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:06:45.867Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:06:45.867Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:06:45.867Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:06:49.038Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:07:01.000Z [DEBUG] Skipping Stop hook execution - workspace trust not accepted
+2025-12-18T16:07:01.421Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (408.9ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:07:01.734Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (278.4ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:07:01.746Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.2ms)
+2025-12-18T16:07:01.771Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (8.4ms)
+2025-12-18T16:07:01.779Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (7.3ms)
+2025-12-18T16:07:01.789Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766074021789
+2025-12-18T16:07:01.789Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:07:01.799Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (10.0ms)
+2025-12-18T16:07:01.799Z [DEBUG] Temp file written successfully, size: 54333 bytes
+2025-12-18T16:07:01.799Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:07:01.799Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766074021789 to /home/ai-textbook/.claude.json
+2025-12-18T16:07:01.799Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:07:01.805Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766074021805
+2025-12-18T16:07:01.805Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:07:01.810Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.6ms)
+2025-12-18T16:07:01.810Z [DEBUG] Temp file written successfully, size: 54334 bytes
+2025-12-18T16:07:01.810Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:07:01.810Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766074021805 to /home/ai-textbook/.claude.json
+2025-12-18T16:07:01.810Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:08:01.834Z [DEBUG] Skipping Notification:idle_prompt hook execution - workspace trust not accepted
+2025-12-18T16:08:51.101Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:08:51.101Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:08:51.101Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:08:51.101Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:08:51.114Z [DEBUG] Skipping UserPromptSubmit hook execution - workspace trust not accepted
+2025-12-18T16:08:51.116Z [DEBUG] FileHistory: Making snapshot for message d995ccca-d03c-4437-b1a5-bfdff48c3a45
+2025-12-18T16:08:51.116Z [DEBUG] FileHistory: Added snapshot for d995ccca-d03c-4437-b1a5-bfdff48c3a45, tracking 0 files
+2025-12-18T16:08:54.396Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:08:54.723Z [ERROR] SyntaxError: SyntaxError: Expected property name or '}' in JSON at position 1
+    at JSON.parse (<anonymous>)
+    at file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:75:715
+    at B (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:8:6526)
+    at yWB (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:946:2834)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-18T16:09:09.679Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:10:12.724Z [ERROR] Error streaming, falling back to non-streaming mode: terminated
+2025-12-18T16:10:28.274Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:10:28.280Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:10:29.811Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:10:29.862Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npx docusaurus info"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:10:29.960Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:10:29.961Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:10:34.632Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:10:36.811Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:10:36.811Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:10:37.626Z [DEBUG] Skipping PostToolUseFailure:Bash hook execution - workspace trust not accepted
+2025-12-18T16:10:37.657Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:10:37.657Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:10:37.657Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:10:37.657Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:10:38.000Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_10_37_227Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:10:57.441Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:10:57.815Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:10:57.817Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:10:58.766Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:10:58.843Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npm run docusaurus -- info"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:10:58.897Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:10:58.899Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:03.487Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:11:05.998Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:11:05.998Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:11:06.060Z [DEBUG] Skipping PostToolUseFailure:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:06.091Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:11:06.091Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:11:06.091Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:11:06.091Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:11:06.959Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_11_06_334Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:11:22.537Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:11:23.778Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:11:23.781Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:24.123Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:24.146Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:11:24.146Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:11:24.146Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:11:24.146Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:11:25.025Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:11:29.334Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:11:30.150Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:11:30.153Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:30.596Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:30.644Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:11:30.644Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:11:30.644Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:11:30.644Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:11:35.130Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:11:37.011Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:11:37.118Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:11:37.120Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:37.225Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:11:37.226Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:11:40.516Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:11:42.766Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:11:42.766Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:11:43.985Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_11_43_168Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:11:49.427Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (9.6ms)
+2025-12-18T16:13:40.565Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:13:40.608Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:13:40.608Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:13:40.608Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:13:40.608Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:13:43.342Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:13:49.209Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:13:50.633Z [DEBUG] executePreToolHooks called for tool: TaskOutput
+2025-12-18T16:13:50.636Z [DEBUG] Skipping PreToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T16:14:20.827Z [DEBUG] Skipping PostToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T16:14:20.887Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:14:20.887Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:14:20.887Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:14:20.887Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:14:23.376Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.3ms)
+2025-12-18T16:15:03.000Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:15:08.764Z [DEBUG] Skipping Stop hook execution - workspace trust not accepted
+2025-12-18T16:15:09.272Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (497.4ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:15:09.309Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (8.6ms)
+2025-12-18T16:15:09.317Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (8.7ms)
+2025-12-18T16:15:09.636Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (310.1ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:15:09.675Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766074509675
+2025-12-18T16:15:09.675Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:15:09.680Z [DEBUG] Temp file written successfully, size: 54335 bytes
+2025-12-18T16:15:09.680Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:15:09.680Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766074509675 to /home/ai-textbook/.claude.json
+2025-12-18T16:15:09.680Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:15:09.686Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766074509686
+2025-12-18T16:15:09.686Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:15:09.691Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.1ms)
+2025-12-18T16:15:09.691Z [DEBUG] Temp file written successfully, size: 54336 bytes
+2025-12-18T16:15:09.691Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:15:09.691Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766074509686 to /home/ai-textbook/.claude.json
+2025-12-18T16:15:09.691Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:16:09.719Z [DEBUG] Skipping Notification:idle_prompt hook execution - workspace trust not accepted
+2025-12-18T16:18:24.166Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:18:24.166Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:18:24.166Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:18:24.166Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:18:24.179Z [DEBUG] Skipping UserPromptSubmit hook execution - workspace trust not accepted
+2025-12-18T16:18:24.180Z [DEBUG] FileHistory: Making snapshot for message f60e5ac7-620e-4059-bd1d-7c92d5bf3e16
+2025-12-18T16:18:24.180Z [DEBUG] FileHistory: Added snapshot for f60e5ac7-620e-4059-bd1d-7c92d5bf3e16, tracking 0 files
+2025-12-18T16:18:34.752Z [ERROR] Error streaming, falling back to non-streaming mode: 500 {"error":{"message":"fetch failedTypeError: fetch failed\n    at node:internal/deps/undici/undici:14900:13\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at runNextTicks (node:internal/process/task_queues:64:3)\n    at process.processImmediate (node:internal/timers:454:9)\n    at async p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79997:11)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"internal_error"}}
+2025-12-18T16:18:34.763Z [ERROR] Error streaming, falling back to non-streaming mode: 500 {"error":{"message":"fetch failedTypeError: fetch failed\n    at node:internal/deps/undici/undici:14900:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79997:11)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"internal_error"}}
+2025-12-18T16:18:45.111Z [ERROR] SyntaxError: SyntaxError: Expected property name or '}' in JSON at position 1
+    at JSON.parse (<anonymous>)
+    at file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:75:715
+    at B (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:8:6526)
+    at yWB (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:946:2834)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-18T16:19:15.525Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:19:15.527Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:19:15.682Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:19:15.720Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:19:15.721Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:19:19.279Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:19:19.308Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:19:19.308Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:19:19.308Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:19:19.308Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:19:19.367Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:19:24.395Z [DEBUG] npm view failed with code 1
+2025-12-18T16:19:24.395Z [DEBUG] npm stderr: (empty)
+2025-12-18T16:19:32.273Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:20:40.161Z [ERROR] Error streaming, falling back to non-streaming mode: 502 {"error":{"message":"Error from provider(qwen,qwen3-coder-plus: 502): <html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>alibaba-ga</center>\r\n</body>\r\n</html>\r\nError: Error from provider(qwen,qwen3-coder-plus: 502): <html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>alibaba-ga</center>\r\n</body>\r\n</html>\r\n\n    at nt (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79940:11)\n    at p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:80000:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"provider_response_error"}}
+2025-12-18T16:20:54.683Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:20:54.685Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:20:54.902Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:20:54.966Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:20:54.967Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:20:57.807Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:20:57.847Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:20:57.847Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:20:57.847Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:20:57.847Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:20:57.895Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:20:59.077Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:21:00.236Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:21:00.236Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:21:11.267Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_21_00_510Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:21:11.300Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:21:13.233Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:21:13.235Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:21:16.136Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:21:16.188Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "pkill -f \"docusaurus\""
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:21:16.258Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:21:16.261Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:21:18.453Z [DEBUG] Skipping PostToolUseFailure:Bash hook execution - workspace trust not accepted
+2025-12-18T16:21:18.492Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:21:18.492Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:21:18.492Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:21:18.492Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:21:18.553Z [DEBUG] Writing to temp file: /home/ai-textbook/.claude.json.tmp.15685.1766074878553
+2025-12-18T16:21:18.553Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:21:18.567Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (13.7ms)
+2025-12-18T16:21:18.567Z [DEBUG] Temp file written successfully, size: 54336 bytes
+2025-12-18T16:21:18.567Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:21:18.567Z [DEBUG] Renaming /home/ai-textbook/.claude.json.tmp.15685.1766074878553 to /home/ai-textbook/.claude.json
+2025-12-18T16:21:18.567Z [DEBUG] File /home/ai-textbook/.claude.json written atomically
+2025-12-18T16:21:18.598Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:21:23.672Z [DEBUG] npm view failed with code 1
+2025-12-18T16:21:23.672Z [DEBUG] npm stderr: (empty)
+2025-12-18T16:21:37.704Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:21:39.156Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:21:39.159Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:21:41.037Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:21:41.319Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npm run build"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:21:41.370Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:21:41.371Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:21:51.843Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:21:55.002Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:21:55.002Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:21:56.383Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_21_55_423Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:22:10.639Z [DEBUG] Skipping PostToolUseFailure:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:10.682Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:22:10.682Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:22:10.682Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:22:10.682Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:22:22.100Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:23.651Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T16:22:23.652Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:22:23.705Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:22:23.733Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:22:23.733Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:22:23.733Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:22:23.733Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:22:28.547Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:30.069Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:22:30.072Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:31.495Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:31.520Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "rm -f .babelrc babel.config.js"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:22:31.592Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:22:31.594Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:36.718Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:36.747Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:22:36.747Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:22:36.747Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:22:36.747Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:22:36.828Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:22:38.774Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:22:38.774Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:22:38.812Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:39.673Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_22_39_056Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:22:51.380Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:52.096Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:22:52.098Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:52.473Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:22:52.500Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:22:52.500Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:22:52.500Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:22:52.500Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:22:54.690Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:55.484Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:22:57.601Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-18T16:22:57.603Z [DEBUG] Skipping PreToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:22:57.666Z [DEBUG] Skipping PostToolUse:Read hook execution - workspace trust not accepted
+2025-12-18T16:22:57.706Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:22:57.706Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:22:57.706Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:22:57.706Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:23:01.036Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:23:03.348Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-18T16:23:03.350Z [DEBUG] Skipping PreToolUse:Edit hook execution - workspace trust not accepted
+2025-12-18T16:23:03.397Z [DEBUG] Permission suggestions for Edit: [
+  {
+    "type": "setMode",
+    "mode": "acceptEdits",
+    "destination": "session"
+  }
+]
+2025-12-18T16:23:03.452Z [DEBUG] executePermissionRequestHooks called for tool: Edit
+2025-12-18T16:23:03.453Z [DEBUG] Skipping PermissionRequest:Edit hook execution - workspace trust not accepted
+2025-12-18T16:23:07.283Z [DEBUG] Writing to temp file: /home/ai-textbook/package.json.tmp.15685.1766074987283
+2025-12-18T16:23:07.283Z [DEBUG] Preserving file permissions: 100600
+2025-12-18T16:23:07.295Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (11.8ms)
+2025-12-18T16:23:07.295Z [DEBUG] Temp file written successfully, size: 1896 bytes
+2025-12-18T16:23:07.295Z [DEBUG] Applied original permissions to temp file
+2025-12-18T16:23:07.295Z [DEBUG] Renaming /home/ai-textbook/package.json.tmp.15685.1766074987283 to /home/ai-textbook/package.json
+2025-12-18T16:23:07.295Z [DEBUG] File /home/ai-textbook/package.json written atomically
+2025-12-18T16:23:07.304Z [DEBUG] [SLOW OPERATION DETECTED] fs.writeFileSync (5.5ms)
+2025-12-18T16:23:07.304Z [DEBUG] FileHistory: Tracked file modification for /home/ai-textbook/package.json
+2025-12-18T16:23:07.327Z [DEBUG] Skipping PostToolUse:Edit hook execution - workspace trust not accepted
+2025-12-18T16:23:07.372Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:23:07.372Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:23:07.372Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:23:07.372Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:23:07.543Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:23:09.312Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:23:09.312Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:23:10.210Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_23_09_600Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:23:11.702Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:23:12.492Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:23:12.495Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:23:12.675Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "npm run build"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:23:12.718Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:23:12.719Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:23:14.805Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:23:16.500Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:23:16.500Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:23:17.848Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_23_16_931Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:24:12.725Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (8.1ms)
+2025-12-18T16:24:35.348Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:24:35.401Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:24:35.401Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:24:35.401Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:24:35.401Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:24:39.361Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:24:43.409Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:24:44.327Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:24:44.328Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:24:44.431Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:24:44.433Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:24:47.264Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:24:49.332Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:24:49.332Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:24:50.530Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_24_49_701Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:25:18.124Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (9.6ms)
+2025-12-18T16:25:22.222Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (11.6ms)
+2025-12-18T16:25:23.274Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (10.2ms)
+2025-12-18T16:25:43.412Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (11.0ms)
+2025-12-18T16:26:47.220Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:26:47.258Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:26:47.258Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:26:47.258Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:26:47.258Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:26:50.435Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:26:59.093Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:27:00.004Z [DEBUG] executePreToolHooks called for tool: TaskOutput
+2025-12-18T16:27:00.007Z [DEBUG] Skipping PreToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T16:27:30.130Z [DEBUG] Skipping PostToolUse:TaskOutput hook execution - workspace trust not accepted
+2025-12-18T16:27:30.241Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:27:30.242Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:27:30.242Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:27:30.242Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:27:35.365Z [DEBUG] [SLOW OPERATION DETECTED] fs.statSync (6.6ms)
+2025-12-18T16:27:43.918Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:27:45.219Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:27:45.221Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:27:45.469Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:27:45.553Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:27:45.555Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:27:48.526Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:27:48.555Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:27:48.555Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:27:48.555Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:27:48.555Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:27:48.612Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:27:49.868Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:27:50.308Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:27:50.308Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:27:55.705Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:27:57.543Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_27_50_596Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:28:05.879Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:28:05.882Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:06.047Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:28:06.078Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:28:06.079Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:08.873Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:08.901Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:28:08.901Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:28:08.901Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:28:08.901Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:28:08.967Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:28:11.729Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:28:11.729Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:28:11.923Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:28:12.392Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:28:12.623Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_28_12_012Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:28:13.446Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:28:13.450Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:13.719Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:13.754Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:28:13.754Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:28:13.754Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:28:13.754Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:28:15.363Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:28:18.846Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:28:20.655Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:28:20.660Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:24.345Z [ERROR] Error streaming, falling back to non-streaming mode: 500 {"error":{"message":"Error from provider(qwen,qwen3-coder-plus: 500): {\"error\":{\"code\":\"internal_server_error\",\"message\":\"call qwen chat auth error\",\"param\":null,\"type\":\"server_error\"},\"request_id\":\"93c8124a-98b8-97e0-b139-9f2a639aa121\"}Error: Error from provider(qwen,qwen3-coder-plus: 500): {\"error\":{\"code\":\"internal_server_error\",\"message\":\"call qwen chat auth error\",\"param\":null,\"type\":\"server_error\"},\"request_id\":\"93c8124a-98b8-97e0-b139-9f2a639aa121\"}\n    at nt (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79940:11)\n    at p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:80000:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"provider_response_error"}}
+2025-12-18T16:28:25.714Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "cat:*"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:28:25.739Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:28:25.740Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:27.855Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:28:27.926Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:28:27.926Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:28:27.926Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:28:27.926Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:28:27.978Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:28:29.661Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:28:33.007Z [DEBUG] npm view failed with code 1
+2025-12-18T16:28:33.007Z [DEBUG] npm stderr: (empty)
+2025-12-18T16:28:38.367Z [ERROR] Error streaming, falling back to non-streaming mode: 500 {"error":{"message":"fetch failedTypeError: fetch failed\n    at node:internal/deps/undici/undici:14900:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async p0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79997:11)\n    at async f0 (/home/ai-textbook/.npm-global/lib/node_modules/@musistudio/claude-code-router/dist/cli.js:79965:96)","type":"api_error","code":"internal_error"}}
+2025-12-18T16:29:09.162Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-18T16:29:09.163Z [DEBUG] Skipping PreToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:29:09.311Z [DEBUG] Permission suggestions for Bash: [
+  {
+    "type": "addRules",
+    "rules": [
+      {
+        "toolName": "Bash",
+        "ruleContent": "curl -s http://localhost:3000"
+      }
+    ],
+    "behavior": "allow",
+    "destination": "localSettings"
+  }
+]
+2025-12-18T16:29:09.346Z [DEBUG] executePermissionRequestHooks called for tool: Bash
+2025-12-18T16:29:09.347Z [DEBUG] Skipping PermissionRequest:Bash hook execution - workspace trust not accepted
+2025-12-18T16:29:15.355Z [DEBUG] Skipping Notification:permission_prompt hook execution - workspace trust not accepted
+2025-12-18T16:31:25.145Z [DEBUG] Skipping PostToolUse:Bash hook execution - workspace trust not accepted
+2025-12-18T16:31:25.200Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-18T16:31:25.200Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-18T16:31:25.200Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-18T16:31:25.200Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-18T16:31:25.243Z [DEBUG] AutoUpdaterWrapper: Installation type: unknown
+2025-12-18T16:31:26.889Z [DEBUG] AutoUpdater: Detected installation type: unknown
+2025-12-18T16:31:26.889Z [DEBUG] AutoUpdater: Unknown installation type, falling back to config
+2025-12-18T16:31:27.724Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:31:27.846Z [ERROR] J71: J71: Failed to install new version of claude:  npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code
+npm error dest /home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/claude-code' -> '/home/ai-textbook/.npm-global/lib/node_modules/@anthropic-ai/.claude-code-2j2zqTRm'
+npm error A complete log of this run can be found in: /home/ai-textbook/.npm/_logs/2025-12-18T16_31_27_177Z-debug-0.log
+    at bOA (file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:4369:493)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///usr/lib/node_modules/@anthropic-ai/claude-code/cli.js:2297:11254
+2025-12-18T16:31:30.954Z [DEBUG] Stream started - received first chunk
+2025-12-18T16:31:36.976Z [DEBUG] Skipping Stop hook execution - workspace trust not accepted
+2025-12-18T16:31:37.371Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (384.8ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:31:37.691Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (282.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-18T16:32:37.743Z [DEBUG] Skipping Notification:idle_prompt hook execution - workspace trust not accepted
+2025-12-19T04:45:27.049Z [DEBUG] [SLOW OPERATION DETECTED] fs.readFileSync (8.2ms)
+2025-12-19T04:45:27.051Z [DEBUG] Skipping SessionEnd:prompt_input_exit hook execution - workspace trust not accepted
+2025-12-19T04:45:27.061Z [DEBUG] Cleaned up session snapshot: /home/ai-textbook/.claude/shell-snapshots/snapshot-bash-1766073336320-vhgzyo.sh
+2025-12-19T04:45:27.062Z [DEBUG] MCP server "context7": Sending SIGINT to MCP server process
+2025-12-19T04:45:27.062Z [DEBUG] LSP server manager shut down successfully
+2025-12-19T04:45:27.063Z [DEBUG] LocalBashTask bf1c319 kill requested
+2025-12-19T04:45:27.074Z [DEBUG] FileHistory: Making snapshot for message bb8f6f1b-4747-4912-a26b-9eae84f67f9b
+2025-12-19T04:45:27.077Z [DEBUG] FileHistory: Added snapshot for bb8f6f1b-4747-4912-a26b-9eae84f67f9b, tracking 1 files
+2025-12-19T04:45:27.093Z [DEBUG] UserCommandMessage rendering: "exit" (args: "none")
+2025-12-19T04:45:27.093Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-19T04:45:27.957Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (810.7ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-19T04:45:28.286Z [DEBUG] [SLOW OPERATION DETECTED] execSyncWithDefaults (293.5ms): powershell.exe -Command '$env:USERPROFILE'
+2025-12-19T04:45:28.300Z [DEBUG] [SLOW OPERATION DETECTED] fs.existsSync (5.6ms)
+2025-12-19T04:45:28.323Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (6.5ms)
+2025-12-19T04:45:28.329Z [DEBUG] [SLOW OPERATION DETECTED] fs.readdirSync (5.9ms)
+2025-12-19T04:45:28.330Z [DEBUG] MCP server "context7": SIGINT failed, sending SIGTERM to MCP server process
+2025-12-19T04:45:28.330Z [DEBUG] MCP server "context7": Cleanup timeout reached, stopping process monitoring

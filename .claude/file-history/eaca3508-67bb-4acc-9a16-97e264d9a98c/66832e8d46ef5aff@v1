@@ -1,0 +1,49 @@
+import js from '@eslint/js';
+import docusaurus from '@docusaurus/eslint-plugin';
+import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
+
+export default [
+  js.configs.recommended,
+  docusaurus.configs.recommended,
+  reactRecommended,
+  {
+    languageOptions: {
+      ecmaVersion: 12,
+      sourceType: 'module',
+      globals: {
+        browser: true,
+        node: true,
+      },
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    plugins: {
+      react: await import('eslint-plugin-react'),
+    },
+    rules: {
+      'no-console': 'warn',
+      'no-unused-vars': 'warn',
+      'no-undef': 'error',
+      'no-duplicate-imports': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'object-shorthand': 'error',
+      'prefer-template': 'error',
+      'no-useless-escape': 'off', // Docusaurus markdown often needs escapes
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+  },
+  {
+    files: ['**/*.md', '**/*.mdx'],
+    rules: {
+      'no-undef': 'off', // Allow global variables in MD/MDX files
+    },
+  },
+];

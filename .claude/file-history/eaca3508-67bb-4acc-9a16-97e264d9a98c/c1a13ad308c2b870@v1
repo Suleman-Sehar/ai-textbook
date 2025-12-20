@@ -1,0 +1,101 @@
+# RAG Chatbot Integration Guide
+
+This guide explains how to integrate a Retrieval-Augmented Generation (RAG) chatbot with the Physical AI & Humanoid Robotics textbook.
+
+## Architecture Overview
+
+The RAG system consists of three main components:
+
+1. **Document Parser**: Parses the textbook markdown files and extracts content
+2. **Vector Store**: Stores document chunks with embeddings for similarity search
+3. **Chat Interface**: Frontend component that allows users to ask questions
+
+## Components
+
+### Document Parser (`src/utils/rag/document-parser.js`)
+- Parses all textbook markdown files
+- Extracts content and metadata
+- Splits documents into manageable chunks
+
+### Vector Store (`src/utils/rag/vector-store.js`)
+- Stores document embeddings for similarity search
+- Implements cosine similarity for finding relevant content
+- Provides search functionality
+
+### Embedding Generator (`src/utils/rag/embedding-generator.js`)
+- Creates embeddings for text content
+- (Currently using mock embeddings - replace with real API in production)
+
+### API Endpoints (`api/rag/`)
+- `/api/rag/search`: Search endpoint for querying the textbook
+- `/api/rag/index`: Endpoint to re-index documents
+
+### Chat Interface (`src/components/rag/ChatInterface.jsx`)
+- React component for the chat interface
+- Integrates with the RAG API
+- Displays sources for retrieved information
+
+## Setup Instructions
+
+1. Install dependencies:
+```bash
+npm install react react-dom
+```
+
+2. The system will automatically initialize when first accessed, parsing all textbook documents and creating embeddings.
+
+3. To manually re-index documents, call the `/api/rag/index` endpoint.
+
+## Usage
+
+The chat interface can be embedded in any page of the textbook. It will provide answers based on the textbook content with citations to specific sections.
+
+## API Endpoints
+
+### POST /api/rag/search
+Search for information in the textbook.
+
+Request body:
+```json
+{
+  "query": "Your question here",
+  "topK": 5
+}
+```
+
+Response:
+```json
+{
+  "query": "Your question here",
+  "results": [
+    {
+      "id": "document-id",
+      "content": "Relevant content...",
+      "similarity": 0.95,
+      "metadata": {
+        "source": "module/file.md",
+        "title": "Document Title",
+        "module": "module-name"
+      }
+    }
+  ],
+  "count": 5
+}
+```
+
+### POST /api/rag/index
+Re-index all textbook documents.
+
+Response:
+```json
+{
+  "message": "Document indexing completed successfully",
+  "documentCount": 150
+}
+```
+
+## Customization
+
+To use a real embedding service (like OpenAI), replace the embedding-generator.js implementation with calls to the actual API.
+
+To use a proper vector database (like Pinecone, Weaviate, or Supabase), replace the in-memory vector-store.js implementation.
