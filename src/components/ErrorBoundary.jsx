@@ -1,0 +1,65 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    console.error('Error caught by boundary:', error, errorInfo);
+    this.setState({
+      error,
+      errorInfo
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return (
+        <div className="error-boundary">
+          <h2>Oops! Something went wrong.</h2>
+          <p>We're sorry, but an error occurred in the application.</p>
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            <summary>Error details</summary>
+            <p><strong>Error:</strong> {this.state.error && this.state.error.toString()}</p>
+            <p><strong>Component Stack:</strong> {this.state.errorInfo && this.state.errorInfo.componentStack}</p>
+          </details>
+          <button
+            onClick={() => {
+              // Reset the error state to try re-rendering the component
+              this.setState({ hasError: false, error: null, errorInfo: null });
+            }}
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: '#2e8555',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired
+};
+
+export default ErrorBoundary;

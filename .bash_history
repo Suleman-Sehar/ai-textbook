@@ -101,3 +101,217 @@ echo "=== Home directory contents ==="
 ls ~/
 find ~/ -maxdepth 3 -type d -name "*textbook*" 2>/dev/null
 ls /mnt/c/Users/
+ccr code
+sudo apt update && sudo apt upgrade -y
+node -v
+npm -v
+sudo npm install -g @anthropic-ai/claude-code 
+ls -a
+cat ~/.claude-code-router/config.json
+cat > ~/.claude-code-router/config.json << 'EOF'
+{
+ "LOG": true,
+ "LOG_LEVEL": "info",
+ "HOST": "127.0.0.1",
+ "PORT": 3456,
+ "API_TIMEOUT_MS": 600000,
+ "Providers": [
+  {
+  "provider": "openai",
+  "model": "gpt-4o",       // Best balance of speed/cost (replaces "specifyplus")
+  "api_key": "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",
+  "max_tokens": 4096,      // Max tokens per response
+  "temperature": 0.7,      // Creativity level (0.0-1.0)
+  "timeout": 600000,       // 10 minutes timeout (matches your error)
+  "base_url": "https://api.openai.com/v1"
+}
+ ],
+ "Router": {
+  "provider": "openai",
+  "model": "gpt-4o",
+  "api_key": "${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}",  # Auto-injected
+  "timeout": 600000
+},
+}
+EOF
+
+cat > ~/.claude-code-router/config.json << 'EOF'
+{
+ "LOG": true,
+ "LOG_LEVEL": "info",
+ "HOST": "127.0.0.1",
+ "PORT": 3456,
+ "API_TIMEOUT_MS": 600000,
+ "Providers": [
+  {
+  "provider": "openai",
+  "model": "gpt-4o",       // Best balance of speed/cost (replaces "specifyplus")
+  "api_key": "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",
+  "max_tokens": 4096,      // Max tokens per response
+  "temperature": 0.7,      // Creativity level (0.0-1.0)
+  "timeout": 600000,       // 10 minutes timeout (matches your error)
+  "base_url": "https://api.openai.com/v1"
+}
+ ],
+ "Router": {
+  "provider": "openai",
+  "model": "gpt-4o",
+  "api_key": "${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}",  # Auto-injected
+  "timeout": 600000
+},
+}
+EOF
+
+cat ~/.claude-code-router/config.json
+cat > ~/.claude-code-router/config.json << 'EOF'
+
+{  
+  "LOG": true,  
+  "LOG_LEVEL": "info",  
+  "HOST": "127.0.0.1",  
+  "PORT": 3456,  
+  "API_TIMEOUT_MS": 600000,  
+  "Providers": [  
+    {  
+      "name": "qwen",  
+      "api_base_url": "https://portal.qwen.ai/v1/chat/completions",  
+      "api_key": "sk-aa99b15fe76d4adabda0b7f072c4a286",  
+      "models": [  
+        "qwen3-coder-plus",  
+        "qwen3-coder-plus",  
+        "qwen3-coder-plus"  
+      ]  
+    }  
+  ],  
+  "Router": {  
+    "default": "qwen,qwen3-coder-plus",  
+    "background": "qwen,qwen3-coder-plus",  
+    "think": "qwen,qwen3-coder-plus",  
+    "longContext": "qwen,qwen3-coder-plus",  
+    "longContextThreshold": 60000,  
+    "webSearch": "qwen,qwen3-coder-plus"  
+  }  
+}
+
+EOF
+
+cat ~/.claude-code-router/config.json
+echo $SHELL
+echo 'export QWEN_API_KEY="sk-af1bdc2cbfb744e586296552e708b6e1"' >> ~/.bashrc
+source ~/.bashrc
+echo 'export QWEN_API_KEY="sk-af1bdc2cbfb744e586296552e708b6e1"' >> ~/.zshrc
+source ~/.zshrc
+claude --version
+ccr version
+echo $QWEN_API_KE
+uv tool install specifyplus
+specifyplus --help
+mkdir physical-ai-textbook
+git config --global user.name "Suleman Sehar"
+git config --global user.email "solemanseher@gmail.com"
+git config --global user.name
+git config --global user.email
+sp init . --ai claude
+explorer.exe .
+sudo npm install -g @upstash/context7-mcp
+claude mcp add --transport stdio context7 npx @upstash/context7-mcp
+claude mcp list
+ccr start
+qwen
+Qwen
+qwen
+pip install qwen-llm
+sudo apt update
+sudo apt install python3-pip
+pip3 install qwen
+pip3 install --user qwen
+python3 path/to/qwen.py
+python3 -m qwen
+pip3 install qwen
+qwen
+pip3 install --user qwen
+pip3 list | grep qwen
+which qwen
+find / -name "*qwen*" 2>/dev/null
+git clone https://github.com/QwenLM/Qwen.git
+cd Qwen
+pip3 install -r requirements.txt
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+qwen
+pip3 list | grep qwen
+python3 -m pip show qwen | grep Location
+find ~/.local/bin -name "qwen" 2>/dev/null
+find /usr/local/bin -name "qwen" 2>/dev/null
+echo $PATH
+echo $PATH | tr ':' '\n' | grep local
+export PATH="$HOME/.local/bin:$PATH"
+qwen --version
+qwen --help
+npm install -g @qwen-code/qwen-code@latest
+npm config set prefix '~/.npm-global'
+sudo npm install -g @qwen-code/qwen-code@latest
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+npm install -g @qwen-code/qwen-code@latest
+sudo chown -R $USER:$USER ~/.npm
+sudo chown -R $USER:$USER ~/.config
+sudo chown -R $USER:$USER /usr/lib/node_modules
+sudo chown -R $USER:$USER /usr/bin/node
+sudo chown -R $USER:$USER /usr/bin/npm
+npm install -g @qwen-code/qwen-code@latest
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+npm install -g @qwen-code/qwen-code@latest
+qwen --version
+qwen
+ccr code
+ccr stop
+qwen
+ccr stop
+qwen
+ccr start
+ccr code
+ccr stop
+ccr code
+ccr stop
+ccr code
+ccr stop
+cd /mnt/c/Users/<YourWindowsUsername>/Desktop/ai-textbook
+cd /mnt/c/Users/Suleman/Desktop/ai-textbook
+ls
+npm install
+npm run dev
+pwd
+ls
+npm run
+ccr start
+ccr code
+npm install -g @qwen-code/qwen-code@latest
+qwen --version
+npm install -g @anthropic-ai/claude-code @musistudio/claude-code-router
+ccr start
+ccr code
+ccr stop
+npm run
+ccr start
+qwen
+ccr code
+ccr stop
+qwen
+ccr start
+ccr code
+ccr stop4
+ccr stop
+qwen
+ccr code
+ccr stop
+ccr start
+npm install --save-dev typescript
+qwen
+ccr code
+ccr stop
+ccr code
+ccr stop
+ccr start

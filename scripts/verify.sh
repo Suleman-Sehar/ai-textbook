@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Script to run all validation checks for the Physical AI & Humanoid Robotics Textbook
+# This script runs word count check, link check, and other validation tasks
+
+set -e
+
+echo "Running all validation checks for Physical AI & Humanoid Robotics Textbook..."
+echo
+
+# Check word count
+echo "1. Checking word count..."
+if [ -f "scripts/check-wordcount.py" ]; then
+    python3 scripts/check-wordcount.py
+    if [ $? -eq 0 ]; then
+        echo "✅ Word count check passed"
+    else
+        echo "❌ Word count check failed"
+        exit 1
+    fi
+else
+    echo "⚠️  Word count script not found, skipping check"
+fi
+
+echo
+
+# Check links
+echo "2. Checking links..."
+if [ -f "scripts/link-check.sh" ]; then
+    bash scripts/link-check.sh
+    if [ $? -eq 0 ]; then
+        echo "✅ Link check passed"
+    else
+        echo "❌ Link check failed"
+        exit 1
+    fi
+else
+    echo "⚠️  Link check script not found, skipping check"
+fi
+
+echo
+
+# Check for required directories and files
+echo "3. Checking required structure..."
+
+REQUIRED_DIRS=("docs" "diagrams" "code" "templates" "scripts" "static/img")
+MISSING_DIRS=()
+
+for dir in "${REQUIRED_DIRS[@]}"; do
+    if [ ! -d "$dir" ]; then
+        MISSING_DIRS+=("$dir")
+    fi
+done
+
+if [ ${#MISSING_DIRS[@]} -gt 0 ]; then
+    echo "❌ Missing required directories: ${MISSING_DIRS[*]}"
+    exit 1
+else
+    echo "✅ All required directories exist"
+fi
+
+# Check for module directories
+REQUIRED_MODULE_DIRS=("docs/module-1-ros2" "docs/module-2-digital-twin" "docs/module-3-nvidia-isaac" "docs/module-4-vision-language-action")
+MISSING_MODULE_DIRS=()
+
+for dir in "${REQUIRED_MODULE_DIRS[@]}"; do
+    if [ ! -d "$dir" ]; then
+        MISSING_MODULE_DIRS+=("$dir")
+    fi
+done
+
+if [ ${#MISSING_MODULE_DIRS[@]} -gt 0 ]; then
+    echo "❌ Missing required module directories: ${MISSING_MODULE_DIRS[*]}"
+    exit 1
+else
+    echo "✅ All required module directories exist"
+fi
+
+echo
+
+# Check for required config files
+echo "4. Checking required configuration files..."
+
+REQUIRED_FILES=("docusaurus.config.js" "package.json" ".gitignore")
+MISSING_FILES=()
+
+for file in "${REQUIRED_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+        MISSING_FILES+=("$file")
+    fi
+done
+
+if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+    echo "❌ Missing required files: ${MISSING_FILES[*]}"
+    exit 1
+else
+    echo "✅ All required configuration files exist"
+fi
+
+echo
+echo "🎉 All validation checks passed!"
+echo "The Physical AI & Humanoid Robotics Textbook project structure is complete and valid."

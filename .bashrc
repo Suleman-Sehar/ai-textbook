@@ -119,3 +119,5 @@ fi
 . "$HOME/.local/bin/env"
 export PATH="$HOME/.local/bin:$PATH"
 export QWEN_API_KEY="sk-af1bdc2cbfb744e586296552e708b6e1"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH=~/.npm-global/bin:$PATH

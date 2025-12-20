@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "sessionId": "023552ef-7876-4655-912b-8f1808b3de89",
+    "messageId": 0,
+    "type": "user",
+    "message": "stop",
+    "timestamp": "2025-12-14T17:50:00.410Z"
+  },
+  {
+    "sessionId": "fcbd96ea-502b-4356-9b2d-af0afb5828a7",
+    "messageId": 0,
+    "type": "user",
+    "message": "exit",
+    "timestamp": "2025-12-18T05:00:59.765Z"
+  },
+  {
+    "sessionId": "fcbd96ea-502b-4356-9b2d-af0afb5828a7",
+    "messageId": 1,
+    "type": "user",
+    "message": "stop",
+    "timestamp": "2025-12-18T05:01:13.294Z"
+  },
+  {
+    "sessionId": "71d5c522-1d07-47c5-873b-b730eeefc75c",
+    "messageId": 0,
+    "type": "user",
+    "message": "stop",
+    "timestamp": "2025-12-18T10:56:24.553Z"
+  },
+  {
+    "sessionId": "71d5c522-1d07-47c5-873b-b730eeefc75c",
+    "messageId": 1,
+    "type": "user",
+    "message": "exit",
+    "timestamp": "2025-12-18T10:56:28.299Z"
+  }
+]
