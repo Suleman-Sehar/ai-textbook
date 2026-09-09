@@ -114,7 +114,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Physical AI & Humanoid Robotics Textbook. Built with Docusaurus.`,
+        copyright: '© 2026 Suleman Sehar. All rights reserved.',
       },
       prism: {
         theme: lightCodeTheme,

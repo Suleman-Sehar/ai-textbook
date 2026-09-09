@@ -1,0 +1,32 @@
+# Render Blueprint for RAG API
+# Deploy with: render deploy --image ai-textbook-rag
+
+services:
+  - type: web
+    name: ai-textbook-rag
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CHROMA_DIR
+        value: ./chroma_db
+      - key: COLLECTION_NAME
+        value: ai_textbook
+      - key: EMBEDDING_MODEL
+        value: all-MiniLM-L6-v2
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: TOP_K
+        value: "5"
+      - key: MAX_CONTEXT_CHARS
+        value: "8000"
+      - key: PORT
+        value: "8000"
+    disk:
+      name: chroma-data
+      mountPath: /app/chroma_db
+      sizeGB: 1
