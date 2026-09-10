@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './ChatbotWidget.css';
 
 const getChatApiUrl = () => {
-  if (typeof window !== 'undefined') {
-    return (import.meta.env?.VITE_CHAT_API_URL || '').trim() || '/api/chat';
+  const url = (import.meta.env?.VITE_CHAT_API_URL || '').trim();
+  if (url) return url;
+  // Fallback for local development only
+  if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') {
+    return 'http://localhost:8000/api/chat';
   }
   return '/api/chat';
 };
@@ -309,9 +312,13 @@ const ChatbotWidget = () => {
         body: JSON.stringify({ question }),
       });
 
-      if (!response.ok) throw new Error('API error');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        const detail = data?.detail || response.statusText || 'Unknown error';
+        throw new Error(`API error ${response.status}: ${detail}`);
+      }
+
       const botMessage = {
         role: 'assistant',
         content: data.answer,
@@ -324,7 +331,7 @@ const ChatbotWidget = () => {
     } catch (error) {
       const errorMessage = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again later.',
+        content: `⚠️ ${error.message || 'Sorry, I encountered an error. Please try again later.'}`,
       };
       setMessages(prev => [...prev, errorMessage]);
       setRobotState('idle');

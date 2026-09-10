@@ -211,7 +211,9 @@
   right: 0;
   width: 380px;
   max-height: 550px;
-  background: var(--ifm-background-color);
+  background: var(--ifm-background-color, #ffffff);
+  background-color: var(--ifm-background-color, #ffffff);
+  color: var(--ifm-color-emphasis-900, #1a1a2e);
   border-radius: 16px;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
@@ -223,10 +225,13 @@
   transform: translateY(20px) scale(0.95);
   pointer-events: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid var(--ifm-color-emphasis-300);
+  border: 1px solid var(--ifm-color-emphasis-300, #e0e0e0);
 }
 
 [data-theme='dark'] .chatbot-panel {
+  background: var(--ifm-background-color, #1a1a2e);
+  background-color: var(--ifm-background-color, #1a1a2e);
+  color: var(--ifm-color-emphasis-100, #e8e8ea);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -293,11 +298,24 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  background: var(--ifm-background-color, #ffffff);
+  background-color: var(--ifm-background-color, #ffffff);
+}
+
+[data-theme='dark'] .chatbot-messages {
+  background: var(--ifm-background-color, #1a1a2e);
+}
+
+[data-theme='dark'] .welcome-message {
+  background: var(--ifm-background-color, #1a1a2e);
 }
 
 .welcome-message {
-  color: var(--ifm-color-emphasis-700);
+  color: var(--ifm-color-emphasis-700, #4a4a55);
   line-height: 1.6;
+  background: var(--ifm-background-color, #ffffff);
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .welcome-message p {
@@ -360,14 +378,14 @@
 }
 
 .message.assistant .message-bubble {
-  background: var(--ifm-color-emphasis-100);
-  color: var(--ifm-color-emphasis-900);
+  background: var(--ifm-color-emphasis-100, #f0f0f0);
+  color: var(--ifm-color-emphasis-900, #1a1a2e);
   border-bottom-left-radius: 4px;
 }
 
 [data-theme='dark'] .message.assistant .message-bubble {
-  background: var(--ifm-color-emphasis-200);
-  color: var(--ifm-color-emphasis-100);
+  background: var(--ifm-color-emphasis-200, #2d2d3f);
+  color: var(--ifm-color-emphasis-100, #e8e8ea);
 }
 
 .message-content {
