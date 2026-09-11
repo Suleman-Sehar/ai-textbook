@@ -24,8 +24,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY scripts/rag_api.py .
 COPY scripts/ingest_rag.py .
 
-# Copy ChromaDB data (for initial deployment - will be persisted via volume)
-COPY chroma_db/ ./chroma_db/
+# Ensure ChromaDB directory exists (actual data persisted via mounted volume at runtime)
+RUN mkdir -p ./chroma_db
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
