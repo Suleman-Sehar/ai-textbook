@@ -57,7 +57,7 @@ The textbook covers 4 modules over 13 weeks:
 # Initialize components
 logger.info("Initializing ChromaDB...")
 chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
-collection = chroma_client.get_collection(COLLECTION_NAME, embedding_function=None)
+collection = chroma_client.get_or_create_collection(COLLECTION_NAME, embedding_function=None)
 
 logger.info("Loading embedding model...")
 embedding_model = SentenceTransformer(EMBEDDING_MODEL)
