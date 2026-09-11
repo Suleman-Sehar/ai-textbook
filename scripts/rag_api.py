@@ -2,6 +2,7 @@
 """
 RAG Backend API for Physical AI & Humanoid Robotics Textbook
 Exposes POST /api/chat endpoint for the frontend chatbot widget.
+Uses Google Gemini for LLM generation.
 """
 
 import os
@@ -16,7 +17,8 @@ from dotenv import load_dotenv
 
 import chromadb
 from sentence_transformers import SentenceTransformer
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
 # Load environment variables
 load_dotenv()
@@ -29,8 +31,8 @@ logger = logging.getLogger(__name__)
 CHROMA_DIR = os.getenv("CHROMA_DIR", "./chroma_db")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_textbook")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 TOP_K = int(os.getenv("TOP_K", "5"))
 MAX_CONTEXT_CHARS = int(os.getenv("MAX_CONTEXT_CHARS", "8000"))
 
@@ -60,10 +62,10 @@ collection = chroma_client.get_collection(COLLECTION_NAME, embedding_function=No
 logger.info("Loading embedding model...")
 embedding_model = SentenceTransformer(EMBEDDING_MODEL)
 
-logger.info("Initializing OpenAI client...")
-if not OPENAI_API_KEY:
-    logger.warning("OPENAI_API_KEY not set! LLM responses will not work.")
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+logger.info("Initializing Gemini client...")
+if not GEMINI_API_KEY:
+    logger.warning("GEMINI_API_KEY not set! LLM responses will not work.")
+genai_client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 
 # Pydantic models
@@ -129,10 +131,10 @@ def build_context(chunks: List[dict]) -> tuple[str, List[SourceCitation]]:
         # Add to context with citation info
         citation = f"[Source: {meta.get('title', 'Unknown')} > {meta.get('section', 'Unknown')}]"
         context_part = f"{citation}\n{text}"
-        
+
         if total_chars + len(context_part) > MAX_CONTEXT_CHARS:
             break
-        
+
         context_parts.append(context_part)
         total_chars += len(context_part)
 
@@ -140,32 +142,33 @@ def build_context(chunks: List[dict]) -> tuple[str, List[SourceCitation]]:
 
 
 def generate_answer(question: str, context: str) -> str:
-    """Generate grounded answer using OpenAI."""
-    if not openai_client:
-        return "Error: OpenAI API key not configured. Please set OPENAI_API_KEY environment variable."
+    """Generate grounded answer using Google Gemini."""
+    if not genai_client:
+        return "Error: Gemini API key not configured. Please set GEMINI_API_KEY environment variable."
 
     try:
-        response = openai_client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Context from textbook:\n{context}\n\nQuestion: {question}"}
-            ],
+        prompt = f"Context from textbook:\n{context}\n\nQuestion: {question}"
+        cfg = types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
             temperature=0.2,
-            max_tokens=500
+            max_output_tokens=500,
         )
-        return response.choices[0].message.content.strip()
+        response = genai_client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config=cfg,
+        )
+        return response.text.strip()
     except Exception as e:
-        logger.error(f"OpenAI error: {e}")
-        # Fallback: return context summary when LLM fails
+        logger.error(f"Gemini error: {e}")
         error_msg = str(e)
-        if "insufficient_quota" in error_msg or "429" in error_msg:
-            return f"[LLM unavailable - showing retrieved context]\n\nBased on the textbook, here are the relevant passages:\n\n{context[:2000]}..."
+        if "quota" in error_msg.lower() or "429" in error_msg or "rate" in error_msg.lower():
+            return f"[LLM rate-limited - showing retrieved context]\n\nBased on the textbook, here are the relevant passages:\n\n{context[:2000]}..."
         return f"Error generating answer: {error_msg}"
 
 
 # FastAPI app
-app = FastAPI(title="AI Textbook RAG API", version="1.0.0")
+app = FastAPI(title="AI Textbook RAG API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -182,7 +185,8 @@ async def health_check():
         "status": "healthy",
         "chunks_in_db": collection.count(),
         "embedding_model": EMBEDDING_MODEL,
-        "llm_configured": openai_client is not None
+        "llm_configured": genai_client is not None,
+        "llm_model": GEMINI_MODEL,
     }
 
 
@@ -192,8 +196,8 @@ async def chat(request: ChatRequest):
     if not request.question or not request.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty")
 
-    if not openai_client:
-        raise HTTPException(status_code=503, detail="LLM not configured. Set OPENAI_API_KEY.")
+    if not genai_client:
+        raise HTTPException(status_code=503, detail="LLM not configured. Set GEMINI_API_KEY.")
 
     try:
         # Retrieve relevant chunks
