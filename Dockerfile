@@ -27,6 +27,9 @@ COPY scripts/ingest_rag.py .
 # Copy docs/ directory so auto-ingestion can populate ChromaDB on first boot
 COPY docs/ ./docs/
 
+# Ensure ChromaDB directory exists (actual data persisted via mounted volume at runtime)
+RUN mkdir -p ./chroma_db
+
 # Copy ChromaDB data (for initial deployment - will be persisted via volume)
 COPY chroma_db/ ./chroma_db/
 
