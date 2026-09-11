@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 import chromadb
+from chromadb.errors import NotFoundError
 from sentence_transformers import SentenceTransformer
 from google import genai
 from google.genai import types
@@ -54,10 +55,122 @@ The textbook covers 4 modules over 13 weeks:
 - Module 4 (Weeks 11-13): Vision-Language-Action - Kinematics, Decision-Making, Full System Integration
 """
 
+
+def _ensure_collection():
+    """Get the ChromaDB collection, auto-ingesting textbook content if missing."""
+    logger.info("Initializing ChromaDB...")
+    chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
+
+    try:
+        collection = chroma_client.get_collection(COLLECTION_NAME, embedding_function=None)
+        count = collection.count()
+        logger.info(f"Found existing collection '{COLLECTION_NAME}' with {count} chunks")
+        if count > 0:
+            return collection, chroma_client
+        logger.warning("Collection exists but is empty — re-ingesting...")
+    except NotFoundError:
+        logger.info(f"Collection '{COLLECTION_NAME}' not found — running auto-ingestion...")
+        collection = _auto_ingest(chroma_client)
+        return collection, chroma_client
+
+    # Empty collection — re-ingest
+    chroma_client.delete_collection(COLLECTION_NAME)
+    collection = _auto_ingest(chroma_client)
+    return collection, chroma_client
+
+
+def _auto_ingest(chroma_client):
+    """Run the textbook ingestion pipeline against the given ChromaDB client."""
+    from pathlib import Path
+    import yaml
+    from langchain_text_splitters import MarkdownHeaderTextSplitter
+
+    docs_dir = Path("docs")
+    if not docs_dir.exists():
+        raise RuntimeError(f"Docs directory '{docs_dir}' not found — cannot auto-ingest")
+
+    # --- chunking (mirrors scripts/ingest_rag.py) ---
+    headers_to_split_on = [
+        ("#", "h1"), ("##", "h2"), ("###", "h3"), ("####", "h4"),
+    ]
+    TextSplitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+
+    chunks = []
+    for md_file in docs_dir.rglob("*.md"):
+        content = md_file.read_text(encoding="utf-8")
+        frontmatter = {}
+        if content.startswith("---"):
+            parts = content.split("---", 2)
+            if len(parts) >= 3:
+                try:
+                    frontmatter = yaml.safe_load(parts[1]) or {}
+                    content = parts[2]
+                except yaml.YAMLError:
+                    pass
+
+        rel_path = md_file.relative_to(docs_dir)
+        module = rel_path.parts[0] if len(rel_path.parts) > 1 else "root"
+        doc_id = frontmatter.get("id", rel_path.stem)
+        title = frontmatter.get("title", rel_path.stem)
+
+        try:
+            header_chunks = TextSplitter.split_text(content)
+        except Exception:
+            header_chunks = [{"page_content": content, "metadata": {}}]
+
+        for i, hc in enumerate(header_chunks):
+            chunk_text = hc.page_content if hasattr(hc, "page_content") else str(hc)
+            chunk_meta = hc.metadata if hasattr(hc, "metadata") else {}
+            if not chunk_text.strip():
+                continue
+
+            metadata = {
+                "source_file": str(rel_path),
+                "module": module,
+                "doc_id": doc_id,
+                "title": title,
+                "sidebar_label": frontmatter.get("sidebar_label", title),
+                "section": chunk_meta.get("h1", "") or chunk_meta.get("h2", "") or chunk_meta.get("h3", "") or "Introduction",
+                "subsection": chunk_meta.get("h2", "") or chunk_meta.get("h3", "") or chunk_meta.get("h4", "") or "",
+                "chunk_index": i,
+            }
+            metadata.update(frontmatter)
+            chunks.append({"text": chunk_text.strip(), "metadata": metadata})
+
+    if not chunks:
+        raise RuntimeError("No chunks produced from docs/ — cannot auto-ingest")
+
+    # --- embeddings ---
+    logger.info(f"Generating embeddings for {len(chunks)} chunks...")
+    model = SentenceTransformer(EMBEDDING_MODEL)
+    texts = [c["text"] for c in chunks]
+    embeddings = model.encode(texts, show_progress_bar=True, batch_size=32)
+
+    # --- store ---
+    logger.info("Storing in ChromaDB...")
+    try:
+        chroma_client.delete_collection(COLLECTION_NAME)
+    except Exception:
+        pass
+    collection = chroma_client.create_collection(name=COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
+
+    ids = [f"{c['metadata']['doc_id']}_{c['metadata']['chunk_index']}" for c in chunks]
+    metadatas = [c["metadata"] for c in chunks]
+
+    collection.add(
+        ids=ids,
+        embeddings=embeddings.tolist(),
+        documents=texts,
+        metadatas=metadatas,
+    )
+
+    count = collection.count()
+    logger.info(f"Auto-ingested {count} chunks into collection '{COLLECTION_NAME}'")
+    return collection
+
+
 # Initialize components
-logger.info("Initializing ChromaDB...")
-chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
-collection = chroma_client.get_collection(COLLECTION_NAME, embedding_function=None)
+chroma_client, collection = _ensure_collection()
 
 logger.info("Loading embedding model...")
 embedding_model = SentenceTransformer(EMBEDDING_MODEL)

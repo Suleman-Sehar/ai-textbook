@@ -24,6 +24,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY scripts/rag_api.py .
 COPY scripts/ingest_rag.py .
 
+# Copy docs/ directory so auto-ingestion can populate ChromaDB on first boot
+COPY docs/ ./docs/
+
 # Copy ChromaDB data (for initial deployment - will be persisted via volume)
 COPY chroma_db/ ./chroma_db/
 
