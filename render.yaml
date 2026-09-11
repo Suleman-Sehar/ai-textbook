@@ -10,7 +10,7 @@ services:
     region: oregon
     healthCheckPath: /health
     envVars:
-      - key: OPENAI_API_KEY
+      - key: GEMINI_API_KEY
         sync: false
       - key: CHROMA_DIR
         value: ./chroma_db
@@ -18,8 +18,8 @@ services:
         value: ai_textbook
       - key: EMBEDDING_MODEL
         value: all-MiniLM-L6-v2
-      - key: OPENAI_MODEL
-        value: gpt-4o-mini
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
       - key: TOP_K
         value: "5"
       - key: MAX_CONTEXT_CHARS

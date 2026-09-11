@@ -1,15 +1,16 @@
 # RAG Backend Deployment Guide (Option B: Separate Always-On Service)
 
 This guide covers deploying the Python FastAPI + ChromaDB RAG backend to Railway, Render, or Fly.io.
+Uses Google Gemini 3.6-flash for LLM generation.
 
 ---
 
 ## Prerequisites
 
-1. **Rotate your OpenAI API key** (the one in `.env` was exposed):
-   - Go to https://platform.openai.com/api-keys
-   - Revoke the old key: `sk-proj-...` (your exposed key)
-   - Create a new key
+1. **Get your Gemini API key:**
+   - Go to https://aistudio.google.com/apikey
+   - Create a new API key
+   - Copy it for use below
 
 2. **GitHub repo** with this codebase pushed
 
@@ -24,7 +25,8 @@ This guide covers deploying the Python FastAPI + ChromaDB RAG backend to Railway
 3. Select your repo
 4. Railway auto-detects `Dockerfile` and `railway.json`
 5. Add environment variable:
-   - `OPENAI_API_KEY` = your new OpenAI key
+   - `GEMINI_API_KEY` = your Gemini API key
+   - `PORT` = `8000`
 6. Click "Deploy"
 
 ### Persistent Storage
@@ -48,7 +50,7 @@ This guide covers deploying the Python FastAPI + ChromaDB RAG backend to Railway
    - Free tier (spins down after 15min inactivity)
    - 1GB persistent disk for ChromaDB
    - Auto health checks
-5. Add secret: `OPENAI_API_KEY` in Environment tab
+5. Add secret: `GEMINI_API_KEY` in Environment tab
 
 ### Note on Free Tier
 - Service spins down after 15min of no requests
@@ -72,7 +74,7 @@ fly auth login
 fly launch --copy-config --name ai-textbook-rag
 
 # Set secret
-fly secrets set OPENAI_API_KEY=your-new-key
+fly secrets set GEMINI_API_KEY=your-gemini-key
 
 # Deploy
 fly deploy
@@ -102,7 +104,7 @@ VITE_CHAT_API_URL = https://your-backend-url/api/chat
 ### 3. Redeploy Vercel Frontend
 - Vercel auto-redeploys on env var change, or trigger manually
 
-### 3. Test the Chatbot
+### 4. Test the Chatbot
 - Visit your Vercel URL
 - Click the robot widget
 - Ask: "What is Physical AI?"
@@ -140,7 +142,8 @@ python scripts/ingest_rag.py
        │                              (chroma_db/)
        ▼                                      ▼
   CDN + Edge                          Python 3.11
-  Global                               sentence-transformers
+  Global                              sentence-transformers
+                                      Google Gemini 3.6-flash
 ```
 
 ---
@@ -164,13 +167,14 @@ python scripts/ingest_rag.py
 | First request timeout | Increase healthcheck timeout, or upgrade from free tier |
 | Embeddings slow on first request | Model downloads on first run (~90MB); subsequent fast |
 | CORS errors | FastAPI already allows all origins (`*`) |
+| Gemini 429 rate limit | Free tier is 15 RPM; implement retry/backoff if needed |
 
 ---
 
 ## Security Notes
 
 - Never commit `.env` or `chroma_db/` to git
-- Use platform secret management for `OPENAI_API_KEY`
+- Use platform secret management for `GEMINI_API_KEY`
 - CORS is open (`*`) for development; restrict in production if needed:
   ```python
   # In rag_api.py, change:
