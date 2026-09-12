@@ -30,9 +30,6 @@ COPY docs/ ./docs/
 # Ensure ChromaDB directory exists (actual data persisted via mounted volume at runtime)
 RUN mkdir -p ./chroma_db
 
-# Copy ChromaDB data (for initial deployment - will be persisted via volume)
-COPY chroma_db/ ./chroma_db/
-
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
