@@ -2,7 +2,7 @@
 """
 RAG Backend API for Physical AI & Humanoid Robotics Textbook
 Exposes POST /api/chat endpoint for the frontend chatbot widget.
-Uses Google Gemini for LLM generation.
+Uses Google Gemini for LLM generation and Supabase (pgvector) for vector storage.
 """
 
 import os
@@ -15,8 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-import chromadb
-from chromadb.errors import NotFoundError
+import vecs
 from sentence_transformers import SentenceTransformer
 from google import genai
 from google.genai import types
@@ -29,7 +28,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configuration
-CHROMA_DIR = os.getenv("CHROMA_DIR", "./chroma_db")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_textbook")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -57,43 +57,49 @@ The textbook covers 4 modules over 13 weeks:
 
 
 def _ensure_collection():
-    """Get the ChromaDB collection, auto-ingesting textbook content if missing."""
-    logger.info("Initializing ChromaDB...")
-    chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
+    """Get the Supabase pgvector collection, creating it if missing."""
+    logger.info("Initializing Supabase pgvector...")
+    vx = vecs.Client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    dims = 384  # all-MiniLM-L6-v2 produces 384-dim embeddings
 
     try:
-        collection = chroma_client.get_collection(COLLECTION_NAME, embedding_function=None)
+        collection = vx.get_collection(COLLECTION_NAME)
         count = collection.count()
         logger.info(f"Found existing collection '{COLLECTION_NAME}' with {count} chunks")
         if count > 0:
-            return collection, chroma_client
-        logger.warning("Collection exists but is empty — re-ingesting...")
-    except NotFoundError:
-        logger.info(f"Collection '{COLLECTION_NAME}' not found — running auto-ingestion...")
-        collection = _auto_ingest(chroma_client)
-        return collection, chroma_client
+            return collection, vx
+        logger.warning("Collection exists but is empty - will re-ingest")
+    except Exception:
+        logger.info(f"Collection '{COLLECTION_NAME}' not found - creating...")
+        collection = vx.create_collection(
+            name=COLLECTION_NAME,
+            dimension=dims,
+            metadata={"hnsw:space": "cosine"},
+        )
+        logger.info("Auto-ingesting textbook content into Supabase...")
+        collection = _auto_ingest(vx, collection)
+        return collection, vx
 
-    # Empty collection — re-ingest
-    chroma_client.delete_collection(COLLECTION_NAME)
-    collection = _auto_ingest(chroma_client)
-    return collection, chroma_client
+    # Empty collection - re-ingest
+    collection = _auto_ingest(vx, collection)
+    return collection, vx
 
 
-def _auto_ingest(chroma_client):
-    """Run the textbook ingestion pipeline against the given ChromaDB client."""
+def _auto_ingest(vx, collection):
+    """Run the textbook ingestion pipeline against Supabase pgvector."""
     from pathlib import Path
     import yaml
-    from langchain_text_splitters import MarkdownHeaderTextSplitter
+    from langchain_text_splitters import MarkdownHeaderValueSplitter
 
     docs_dir = Path("docs")
     if not docs_dir.exists():
-        raise RuntimeError(f"Docs directory '{docs_dir}' not found — cannot auto-ingest")
+        raise RuntimeError(f"Docs directory '{docs_dir}' not found - cannot auto-ingest")
 
-    # --- chunking (mirrors scripts/ingest_rag.py) ---
+    # --- chunking ---
     headers_to_split_on = [
         ("#", "h1"), ("##", "h2"), ("###", "h3"), ("####", "h4"),
     ]
-    TextSplitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+    splitter = MarkdownHeaderValueSplitter(headers_to_split_on=headers_to_split_on)
 
     chunks = []
     for md_file in docs_dir.rglob("*.md"):
@@ -114,7 +120,7 @@ def _auto_ingest(chroma_client):
         title = frontmatter.get("title", rel_path.stem)
 
         try:
-            header_chunks = TextSplitter.split_text(content)
+            header_chunks = splitter.split_text(content)
         except Exception:
             header_chunks = [{"page_content": content, "metadata": {}}]
 
@@ -138,7 +144,7 @@ def _auto_ingest(chroma_client):
             chunks.append({"text": chunk_text.strip(), "metadata": metadata})
 
     if not chunks:
-        raise RuntimeError("No chunks produced from docs/ — cannot auto-ingest")
+        raise RuntimeError("No chunks produced from docs/ - cannot auto-ingest")
 
     # --- embeddings ---
     logger.info(f"Generating embeddings for {len(chunks)} chunks...")
@@ -147,30 +153,34 @@ def _auto_ingest(chroma_client):
     embeddings = model.encode(texts, show_progress_bar=True, batch_size=32)
 
     # --- store ---
-    logger.info("Storing in ChromaDB...")
+    logger.info("Storing in Supabase...")
     try:
-        chroma_client.delete_collection(COLLECTION_NAME)
+        collection.delete_records(ids=[])
     except Exception:
         pass
-    collection = chroma_client.create_collection(name=COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
 
-    ids = [f"{c['metadata']['doc_id']}_{c['metadata']['chunk_index']}" for c in chunks]
-    metadatas = [c["metadata"] for c in chunks]
+    records = []
+    for chunk, embedding in zip(chunks, embeddings):
+        record_id = f"{chunk['metadata']['doc_id']}_{chunk['metadata']['chunk_index']}"
+        records.append({
+            "id": record_id,
+            "text": chunk["text"],
+            "embedding": embedding.tolist(),
+            "metadata": chunk["metadata"],
+        })
 
-    collection.add(
-        ids=ids,
-        embeddings=embeddings.tolist(),
-        documents=texts,
-        metadatas=metadatas,
-    )
+    batch_size = 100
+    for i in range(0, len(records), batch_size):
+        batch = records[i:i + batch_size]
+        collection.upsert(batch)
 
     count = collection.count()
-    logger.info(f"Auto-ingested {count} chunks into collection '{COLLECTION_NAME}'")
+    logger.info(f"Auto-ingested {count} chunks into Supabase collection '{COLLECTION_NAME}'")
     return collection
 
 
 # Initialize components
-chroma_client, collection = _ensure_collection()
+collection, vx = _ensure_collection()
 
 logger.info("Loading embedding model...")
 embedding_model = SentenceTransformer(EMBEDDING_MODEL)
@@ -201,20 +211,25 @@ class ChatResponse(BaseModel):
 
 
 def retrieve_context(question: str, top_k: int = TOP_K) -> List[dict]:
-    """Retrieve relevant chunks from ChromaDB."""
+    """Retrieve relevant chunks from Supabase pgvector."""
     query_embedding = embedding_model.encode([question]).tolist()
     results = collection.query(
-        query_embeddings=query_embedding,
+        query_embedding=query_embedding,
         n_results=top_k,
-        include=["documents", "metadatas", "distances"]
+        include=["text", "metadata", "distance"],
     )
 
     chunks = []
-    for doc, meta, dist in zip(results['documents'][0], results['metadatas'][0], results['distances'][0]):
+    for record_id, dist, meta, text in zip(
+        results.get("ids", [[]])[0] if isinstance(results.get("ids"), dict) else results.get("ids", []),
+        results.get("distances", [[]])[0] if isinstance(results.get("distances"), dict) else results.get("distances", []),
+        results.get("metadatas", [[]])[0] if isinstance(results.get("metadatas"), dict) else results.get("metadatas", []),
+        results.get("documents", [[]])[0] if isinstance(results.get("documents"), dict) else results.get("documents", []),
+    ):
         chunks.append({
-            "text": doc,
-            "metadata": meta,
-            "distance": dist
+            "text": text,
+            "metadata": meta or {},
+            "distance": dist if dist is not None else 0.0,
         })
     return chunks
 
@@ -294,9 +309,13 @@ app.add_middleware(
 
 @app.get("/health")
 async def health_check():
+    try:
+        chunk_count = collection.count()
+    except Exception:
+        chunk_count = "unknown"
     return {
         "status": "healthy",
-        "chunks_in_db": collection.count(),
+        "chunks_in_db": chunk_count,
         "embedding_model": EMBEDDING_MODEL,
         "llm_configured": genai_client is not None,
         "llm_model": GEMINI_MODEL,

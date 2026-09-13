@@ -1,16 +1,15 @@
-# RAG API Dockerfile for Railway/Render/Fly.io
-# Uses Python 3.11 slim for smaller image
+# RAG API Dockerfile for Render
+# Uses Python 3.11 slim, vectors stored in Supabase (pgvector)
 
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for ChromaDB and sentence-transformers
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
-    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -24,17 +23,14 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY scripts/rag_api.py .
 COPY scripts/ingest_rag.py .
 
-# Copy docs/ directory so auto-ingestion can populate ChromaDB on first boot
+# Copy docs/ directory (used by ingestion script)
 COPY docs/ ./docs/
-
-# Ensure ChromaDB directory exists (actual data persisted via mounted volume at runtime)
-RUN mkdir -p ./chroma_db
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
+# Expose port (Render provides PORT env var)
 EXPOSE 8000
 
 # Health check

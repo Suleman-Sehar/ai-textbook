@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 """
 RAG Ingestion Script for Physical AI & Humanoid Robotics Textbook
-Chunks content by headings, generates embeddings, stores in ChromaDB.
+Chunks content by headings, generates embeddings, stores in Supabase (pgvector).
 """
 
 import os
-import re
+import sys
 import yaml
 from pathlib import Path
 from typing import List, Dict, Any
 from dataclasses import dataclass
 
-import chromadb
-from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
-from langchain_text_splitters import MarkdownHeaderTextSplitter
+from langchain_text_splitters import MarkdownHeaderValueSplitter
 
 
 @dataclass
@@ -32,7 +30,7 @@ def load_markdown_files(docs_dir: Path) -> List[ContentChunk]:
         ("###", "h3"),
         ("####", "h4"),
     ]
-    splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+    splitter = MarkdownHeaderValueSplitter(headers_to_split_on=headers_to_split_on)
 
     for md_file in docs_dir.rglob("*.md"):
         content = md_file.read_text(encoding="utf-8")
@@ -80,47 +78,81 @@ def load_markdown_files(docs_dir: Path) -> List[ContentChunk]:
                 "chunk_index": i,
             }
             metadata.update(frontmatter)
-
             chunks.append(ContentChunk(text=chunk_text.strip(), metadata=metadata))
 
     return chunks
 
 
-def ingest_to_chromadb(chunks: List[ContentChunk], persist_dir: str = "./chroma_db", collection_name: str = "ai_textbook"):
-    """Ingest chunks into ChromaDB with embeddings."""
-    print(f"Initializing ChromaDB at {persist_dir}...")
+def ingest_to_supabase(chunks: List[ContentChunk]):
+    """Ingest chunks into Supabase pgvector table."""
+    import vecs
 
-    client = chromadb.PersistentClient(path=persist_dir, settings=Settings(anonymized_telemetry=False))
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+    COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_textbook")
+    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
-    # Delete existing collection if it exists
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+        print("ERROR: SUPABASE_URL and SUPABASE_SERVICE_KEY must be set")
+        return 1
+
+    # Connect to Supabase
+    print(f"Connecting to Supabase at {SUPABASE_URL}...")
+    vx = vecs.Client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+    # Create or get collection (table)
+    dims = 384  # all-MiniLM-L6-v2 produces 384-dim embeddings
     try:
-        client.delete_collection(collection_name)
-        print(f"Deleted existing collection: {collection_name}")
+        collection = vx.get_collection(COLLECTION_NAME)
+        print(f"Found existing collection '{COLLECTION_NAME}'")
+    except Exception:
+        print(f"Creating collection '{COLLECTION_NAME}' with {dims} dimensions...")
+        collection = vx.create_collection(
+            name=COLLECTION_NAME,
+            dimension=dims,
+            metadata={"hnsw:space": "cosine"},
+        )
+
+    # Load embedding model
+    print("Loading embedding model...")
+    model = SentenceTransformer(EMBEDDING_MODEL)
+
+    # Clear existing records (re-ingest)
+    print("Clearing existing records...")
+    try:
+        collection.delete_records(ids=[])
     except Exception:
         pass
 
-    collection = client.create_collection(name=collection_name, metadata={"hnsw:space": "cosine"})
-
-    print("Loading embedding model...")
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-
+    # Generate embeddings
     print(f"Generating embeddings for {len(chunks)} chunks...")
     texts = [c.text for c in chunks]
     embeddings = model.encode(texts, show_progress_bar=True, batch_size=32)
 
-    print("Storing in ChromaDB...")
-    ids = [f"{c.metadata['doc_id']}_{c.metadata['chunk_index']}" for c in chunks]
-    metadatas = [c.metadata for c in chunks]
+    # Build records
+    print("Inserting records into Supabase...")
+    records = []
+    for i, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+        record_id = f"{chunk.metadata['doc_id']}_{chunk.metadata['chunk_index']}"
+        records.append({
+            "id": record_id,
+            "text": chunk.text,
+            "embedding": embedding.tolist(),
+            "metadata": chunk.metadata,
+        })
 
-    collection.add(
-        ids=ids,
-        embeddings=embeddings.tolist(),
-        documents=texts,
-        metadatas=metadatas
-    )
+    # Insert in batches of 100
+    batch_size = 100
+    total_batches = (len(records) + batch_size - 1) // batch_size
+    for i in range(0, len(records), batch_size):
+        batch = records[i:i + batch_size]
+        collection.upsert(batch)
+        batch_num = i // batch_size + 1
+        print(f"  Inserted batch {batch_num}/{total_batches}")
 
+    # Get count
     count = collection.count()
-    print(f"Successfully ingested {count} chunks into collection '{collection_name}'")
+    print(f"Successfully ingested {count} chunks into Supabase collection '{COLLECTION_NAME}'")
 
     # Print summary by module
     module_counts = {}
@@ -128,11 +160,11 @@ def ingest_to_chromadb(chunks: List[ContentChunk], persist_dir: str = "./chroma_
         mod = c.metadata["module"]
         module_counts[mod] = module_counts.get(mod, 0) + 1
 
-    print("\nChunks per module:")
+    print("Chunks per module:")
     for mod, cnt in sorted(module_counts.items()):
         print(f"  {mod}: {cnt} chunks")
 
-    return collection
+    return 0
 
 
 def main():
@@ -143,15 +175,15 @@ def main():
 
     print("Loading markdown files...")
     chunks = load_markdown_files(docs_dir)
-    print(f"Loaded {len(chunks)} chunks from {len(list(docs_dir.rglob('*.md')))} files")
+    md_count = len(list(docs_dir.rglob("*.md")))
+    print(f"Loaded {len(chunks)} chunks from {md_count} files")
 
     if not chunks:
         print("No content to ingest!")
         return 1
 
-    ingest_to_chromadb(chunks)
-    return 0
+    return ingest_to_supabase(chunks)
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

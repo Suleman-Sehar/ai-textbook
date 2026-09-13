@@ -1,21 +1,27 @@
 # Render Blueprint for RAG API
 # Deploy with: render deploy --image ai-textbook-rag
+# Or: render deploy --blueprint render.yaml
 
 services:
   - type: web
     name: ai-textbook-rag
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: free
+    plan: starter          # Always-on (free tier spins down after 15min)
     region: oregon
     healthCheckPath: /health
     envVars:
+      # Supabase connection (get from Supabase dashboard)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      # LLM (Google Gemini)
       - key: GEMINI_API_KEY
         sync: false
-      - key: CHROMA_DIR
-        value: ./chroma_db
-      - key: COLLECTION_NAME
-        value: ai_textbook
+      # Configuration
       - key: EMBEDDING_MODEL
         value: all-MiniLM-L6-v2
       - key: GEMINI_MODEL
@@ -26,7 +32,3 @@ services:
         value: "8000"
       - key: PORT
         value: "8000"
-    disk:
-      name: chroma-data
-      mountPath: /app/chroma_db
-      sizeGB: 1
