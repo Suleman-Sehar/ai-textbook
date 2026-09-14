@@ -1,27 +1,27 @@
-# Render Blueprint for RAG API
-# Deploy with: render deploy --image ai-textbook-rag
-# Or: render deploy --blueprint render.yaml
+# Render Blueprint for AI Textbook RAG Backend
+# Deploy by connecting this repo on Render.com as a "New Blueprint"
+# Render will pre-fill everything below except the secret values
+# (marked sync: false), which you'll paste in during setup.
 
 services:
   - type: web
     name: ai-textbook-rag
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter          # Always-on (free tier spins down after 15min)
+    plan: free
     region: oregon
     healthCheckPath: /health
     envVars:
-      # Supabase connection (get from Supabase dashboard)
+      # --- Required secrets (sync: false = Render prompts you to enter these) ---
       - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_ANON_KEY
         sync: false
       - key: SUPABASE_SERVICE_KEY
         sync: false
-      # LLM (Google Gemini)
       - key: GEMINI_API_KEY
         sync: false
-      # Configuration
+      # --- Configuration (sync: true = Render sets these from the values below) ---
+      - key: COLLECTION_NAME
+        value: ai_textbook
       - key: EMBEDDING_MODEL
         value: all-MiniLM-L6-v2
       - key: GEMINI_MODEL
@@ -29,6 +29,4 @@ services:
       - key: TOP_K
         value: "5"
       - key: MAX_CONTEXT_CHARS
-        value: "8000"
-      - key: PORT
         value: "8000"
