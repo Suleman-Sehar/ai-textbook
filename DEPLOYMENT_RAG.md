@@ -1,7 +1,7 @@
-# RAG Backend Deployment Guide (Option B: Separate Always-On Service)
+# RAG Backend Deployment Guide (Render + Supabase pgvector)
 
-This guide covers deploying the Python FastAPI + ChromaDB RAG backend to Railway, Render, or Fly.io.
-Uses Google Gemini 3.6-flash for LLM generation.
+This guide covers deploying the Python FastAPI RAG backend to Render,
+using Supabase (pgvector) for vector storage and Google Gemini for LLM generation.
 
 ---
 
@@ -12,149 +12,122 @@ Uses Google Gemini 3.6-flash for LLM generation.
    - Create a new API key
    - Copy it for use below
 
-2. **GitHub repo** with this codebase pushed
+2. **Set up Supabase:**
+   - Go to https://supabase.com → New Project
+   - Run the SQL migration in `supabase/migrations/001_create_textbook_chunks.sql`
+   - Copy your Project URL and service_role key from Settings → API
+
+3. **GitHub repo** with this codebase pushed
 
 ---
 
-## Option 1: Railway (Recommended - Easiest)
+## Step 1: Run the Supabase SQL Migration
 
-### Quick Deploy (2 minutes)
+In the Supabase SQL Editor, run the contents of
+[`supabase/migrations/001_create_textbook_chunks.sql`](./supabase/migrations/001_create_textbook_chunks.sql):
 
-1. Go to https://railway.app/new
-2. Click "Deploy from GitHub repo"
-3. Select your repo
-4. Railway auto-detects `Dockerfile` and `railway.json`
-5. Add environment variable:
-   - `GEMINI_API_KEY` = your Gemini API key
-   - `PORT` = `8000`
-6. Click "Deploy"
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
 
-### Persistent Storage
-- Railway automatically provides persistent disk for `/app/chroma_db`
-- Your existing `chroma_db/` data will be copied on first deploy
-- On subsequent deploys, the volume persists
+CREATE TABLE IF NOT EXISTS textbook_chunks (
+    id          TEXT PRIMARY KEY,
+    content     TEXT NOT NULL,
+    embedding   vector(384) NOT NULL,
+    metadata    JSONB NOT NULL DEFAULT '{}'::jsonb
+);
 
-### Custom Domain (Optional)
-- Settings → Domains → Generate Domain or add custom
+CREATE INDEX IF NOT EXISTS textbook_chunks_embedding_idx
+    ON textbook_chunks
+    USING hnsw (embedding vector_cosine_ops)
+    WITH (m = 16, ef_construction = 64);
+```
 
 ---
 
-## Option 2: Render (Free Tier Available)
+## Step 2: Deploy to Render
 
-### Quick Deploy
+### Option A: Render Blueprint (Recommended)
 
-1. Go to https://dashboard.render.com/new/web-service
+1. Go to https://dashboard.render.com
+2. Click **Deploy New Web Service**
+3. Connect your GitHub repo: `Suleman-Sehar/ai-textbook`
+4. Render detects `render.yaml` automatically
+5. Click **Apply**
+
+### Option B: Manual Web Service
+
+1. Go to https://dashboard.render.com → **New Web Service**
 2. Connect GitHub repo
-3. Render detects `render.yaml` (Blueprint)
-4. Click "Apply" → Creates service with:
-   - Free tier (spins down after 15min inactivity)
-   - 1GB persistent disk for ChromaDB
-   - Auto health checks
-5. Add secret: `GEMINI_API_KEY` in Environment tab
-
-### Note on Free Tier
-- Service spins down after 15min of no requests
-- First request after spin-down takes ~30-60s to wake up
-- For production, upgrade to Starter ($7/mo) for always-on
+3. Build Command: `pip install -r requirements.txt`
+4. Start Command: `python scripts/rag_api.py`
+5. Plan: **Starter** ($7/mo, always-on) or **Free** (spins down after 15min)
 
 ---
 
-## Option 3: Fly.io (Best Free Allowance)
+## Step 3: Set Environment Variables on Render
 
-### Quick Deploy
+Go to **Settings → Environment Variables** and add:
+
+| Key | Value | Source |
+|-----|-------|--------|
+| `SUPABASE_URL` | `https://wmiedukhvkickdzyxstl.supabase.co` | Supabase → Settings → API → Project URL |
+| `SUPABASE_SERVICE_KEY` | `your-service-role-key` | Supabase → Settings → API → service_role key |
+| `GEMINI_API_KEY` | `your-gemini-key` | Google AI Studio |
+| `PORT` | `8000` | (default) |
+
+---
+
+## Step 4: Run Ingestion
+
+After the service is live, run the ingestion script to populate the
+`textbook_chunks` table with embeddings:
 
 ```bash
-# Install flyctl
-curl -L https://fly.io/install.sh | sh
-
-# Login
-fly auth login
-
-# Launch (creates app, provisions volume)
-fly launch --copy-config --name ai-textbook-rag
-
-# Set secret
-fly secrets set GEMINI_API_KEY=your-gemini-key
-
-# Deploy
-fly deploy
-```
-
-### Free Allowance
-- Up to 3 shared-cpu-1x VMs (256MB-512MB each) free forever
-- 1GB persistent volume free
-- No spin-down (always on)
-
----
-
-## After Backend Deployment
-
-### 1. Get Your Backend URL
-- Railway: `https://your-app.up.railway.app`
-- Render: `https://your-app.onrender.com`
-- Fly.io: `https://ai-textbook-rag.fly.dev`
-
-### 2. Update Vercel Environment Variables
-Go to Vercel Dashboard → Project → Settings → Environment Variables:
-
-```
-VITE_CHAT_API_URL = https://your-backend-url/api/chat
-```
-
-### 3. Redeploy Vercel Frontend
-- Vercel auto-redeploys on env var change, or trigger manually
-
-### 4. Test the Chatbot
-- Visit your Vercel URL
-- Click the robot widget
-- Ask: "What is Physical AI?"
-
----
-
-## Updating Textbook Content (Re-indexing)
-
-When you update `docs/` content:
-
-```bash
-# 1. Run ingestion locally
+# Option A: Run locally (requires .env with SUPABASE_URL + SUPABASE_SERVICE_KEY)
 python scripts/ingest_rag.py
 
-# 2. Commit and push chroma_db/ changes (if using git for data)
-# OR: Re-deploy backend to pick up new data
-# Railway/Render: git push triggers redeploy
-# Fly.io: fly deploy
+# Option B: Run on Render (one-time command)
+render run --service ai-textbook-rag --command "python scripts/ingest_rag.py"
 ```
 
-**Note:** For production, consider running ingestion as a CI step or separate job rather than committing the DB.
+This will embed all 361 textbook chunks and insert them into Supabase.
 
 ---
 
-## Architecture Summary
+## Step 5: Update Vercel Frontend
+
+1. Go to Vercel → **Settings → Environment Variables**
+2. Set:
+   ```
+   VITE_CHAT_API_URL = https://your-render-service.onrender.com/api/chat
+   ```
+3. **Redeploy** the Vercel project
+
+---
+
+## Architecture
 
 ```
 ┌─────────────────┐     HTTPS      ┌──────────────────┐
-│  Vercel (Next)  │ ──────────────► │  Railway/Render  │
+│  Vercel (Next)  │ ──────────────► │  Render          │
 │  Frontend       │  /api/chat     │  Python FastAPI  │
-│  (Static + SSR) │                 │  + ChromaDB      │
-└─────────────────┘                 └──────────────────┘
-       │                                      │
-       │                              Persistent Disk
-       │                              (chroma_db/)
-       ▼                                      ▼
-  CDN + Edge                          Python 3.11
-  Global                              sentence-transformers
-                                      Google Gemini 3.6-flash
+│  (Static + SSR) │                 │  + Gemini LLM    │
+└─────────────────┘                 └────────┬─────────┘
+                                             │
+                                    PostgreSQL + pgvector
+                                    (Supabase Cloud)
 ```
 
 ---
 
-## Cost Estimate (Monthly)
+## Environment Variables Summary
 
-| Platform | Free Tier | Paid Tier |
-|----------|-----------|-----------|
-| Railway | $5 credit/mo | ~$5-10/mo |
-| Render | Free (spins down) | $7/mo (Starter) |
-| Fly.io | 3 VMs + 1GB vol free | ~$5/mo |
+| Variable | Where Set | Purpose |
+|----------|-----------|---------|
+| `SUPABASE_URL` | Render | Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | Render | Supabase service_role key (secret) |
+| `GEMINI_API_KEY` | Render | Google Gemini API key (secret) |
+| `VITE_CHAT_API_URL` | Vercel | Frontend backend URL (public) |
 
 ---
 
@@ -162,19 +135,19 @@ python scripts/ingest_rag.py
 
 | Issue | Solution |
 |-------|----------|
-| "Module not found: chromadb" | Ensure `requirements.txt` has all deps |
-| ChromaDB permission errors | Dockerfile uses non-root user (UID 1000) |
-| First request timeout | Increase healthcheck timeout, or upgrade from free tier |
-| Embeddings slow on first request | Model downloads on first run (~90MB); subsequent fast |
-| CORS errors | FastAPI already allows all origins (`*`) |
+| "Collection does not exist" | Run the SQL migration in Supabase |
+| "relation textbook_chunks does not exist" | Verify migration ran successfully |
+| "Module not found: vecs" | Ensure `vecs==0.0.22` in requirements.txt |
+| "vector(384) dimension mismatch" | Verify embedding model is all-MiniLM-L6-v2 |
+| CORS errors | FastAPI allows all origins (`*`) |
 | Gemini 429 rate limit | Free tier is 15 RPM; implement retry/backoff if needed |
 
 ---
 
 ## Security Notes
 
-- Never commit `.env` or `chroma_db/` to git
-- Use platform secret management for `GEMINI_API_KEY`
+- Never commit `.env` to version control
+- Use platform secret management for `SUPABASE_SERVICE_KEY` and `GEMINI_API_KEY`
 - CORS is open (`*`) for development; restrict in production if needed:
   ```python
   # In rag_api.py, change:
