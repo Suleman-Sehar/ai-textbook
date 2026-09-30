@@ -9,8 +9,16 @@ The chatbot backend runs as a **Hugging Face Docker Space**.
 
 1. Go to <https://huggingface.co/new-space>
 2. Choose **Docker** as the SDK
-3. Name it (e.g. `ai-textbook-rag`) and pick a Docker `null` license
-4. Do **not** clone the starter - push this repo's `Dockerfile` over it
+3. Name it (e.g. `ai-textbook-backend`) and pick a Docker `null` license
+4. Set the hardware to **CPU basic** (not ZeroGPU, which is Gradio-only)
+5. Push this repo's backend files over the generated stub
+
+> **Requires an HF PRO subscription.** Creating or running a Docker Space on
+> free `cpu-basic` hardware fails with `HTTP 402`: *"hosting Gradio and Docker
+> Spaces on free cpu-basic requires a PRO subscription."* Subscribe at
+> <https://huggingface.co/pro>. The `Dockerfile` here is plain and portable, so
+> any Docker host that binds `0.0.0.0:7860` runs it unchanged if you would
+> rather not pay.
 
 The Space reads its configuration from the YAML front matter at the top of
 `README.md`:
@@ -22,6 +30,9 @@ sdk: docker
 app_port: 7860
 ---
 ```
+
+`short_description` must be 60 characters or fewer; the Hub rejects the push
+otherwise.
 
 ## 2. Push the backend
 
@@ -39,11 +50,9 @@ watch curl -s https://Suleman-sehar-ai-textbook-backend.hf.space/health
 
 The Space URL is `https://Suleman-sehar-ai-textbook-backend.hf.space`.
 
-> **Requires an HF PRO subscription.** Creating a Docker Space on free
-> `cpu-basic` hardware now fails with `HTTP 402`: *"hosting Gradio and Docker
-> Spaces on free cpu-basic requires a PRO subscription."* Subscribe at
-> <https://huggingface.co/pro>, or run the same Dockerfile on another host
-> (any Docker platform that binds `0.0.0.0:7860` works unchanged).
+> Only the backend is pushed to the Space: `Dockerfile`, `README.md`,
+> `requirements.txt`, `.dockerignore`, `scripts/` and `docs/`. The Docusaurus
+> frontend stays in this repository and deploys to Vercel.
 
 > The repository contains both the Docusaurus frontend and the FastAPI backend.
 > `main` is the frontend's branch; the Space's own git history lives on the
@@ -141,7 +150,8 @@ produces 384-dim vectors, and vectors from different models are not comparable.
 
 | Symptom | Cause | Fix |
 | --- | --- | --- |
-| Space creation returns HTTP 402 | Docker Spaces on free `cpu-basic` now require an HF PRO subscription | Subscribe to PRO, or host the same Dockerfile elsewhere |
+| Space creation or hardware change returns HTTP 402 | Docker Spaces on free `cpu-basic` now require an HF PRO subscription | Subscribe at <https://huggingface.co/pro>, or run the same Dockerfile on another Docker host |
+| Stage is `CONFIG_ERROR`, "ZeroGPU is only available on Gradio SDK" | The Space still requests ZeroGPU hardware, left over from when it was created as a Gradio Space | Edit the Space's hardware to `cpu-basic` in **Settings -> Hardware** (needs PRO for Docker Spaces) |
 | Build fails at `pip install` | A pin in `requirements.txt` does not exist on PyPI | Check the build log for the package name |
 | Space sleeps mid-conversation | Free Spaces sleep after inactivity | The widget already retries once; ask again to wake it |
 | `/health` shows `"ready": false` | Read `last_error` in the same payload | Usually a bad `GEMINI_API_KEY` or a failed model download |

@@ -7,7 +7,7 @@ sdk: docker
 app_port: 7860
 pinned: false
 license: mit
-short_description: Retrieval-augmented Q&A over the Physical AI & Humanoid Robotics textbook
+short_description: RAG chatbot over the AI textbook
 ---
 
 # AI Textbook RAG API
