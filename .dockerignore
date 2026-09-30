@@ -1,0 +1,41 @@
+# Keep the Docker build context small and never ship secrets to the Space.
+.git
+.gitignore
+.dockerignore
+node_modules
+build
+.docusaurus
+.cache
+coverage
+
+# Secrets - the Space receives these as HF Secrets instead.
+.env
+.env.*
+!.env.example
+
+# Local/agent tooling caches
+.claude
+.claude-code-router
+.config
+.qwen
+.specify
+.history
+.kilo
+
+# Local vector store leftovers (Supabase pgvector is the real store)
+chroma_db
+chroma_db_test
+data
+
+# Not needed by the API image
+docs/.vitepress
+templates
+diagrams
+code
+src
+static
+specs
+history
+scripts/check-wordcount.py
+scripts/link-check.sh
+scripts/verify.sh

@@ -480,6 +480,19 @@
   40% { transform: scale(1.2); opacity: 1; }
 }
 
+/* Shown while waiting on the Hugging Face Space (may be waking from sleep). */
+.loading-status {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #6c757d;
+}
+
+[data-theme='dark'] .loading-status {
+  color: #adb5bd;
+}
+
+
 .chatbot-input {
   display: flex;
   gap: 8px;

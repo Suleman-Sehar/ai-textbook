@@ -1,23 +1,32 @@
-# RAG API Dependencies
-# Core
+# AI Textbook RAG API - dependencies for the Hugging Face Docker Space
+#
+# NOTE: torch is intentionally NOT listed here. The Dockerfile installs the
+# CPU-only build from the PyTorch CPU index first so the image stays small and
+# the Space does not pull multi-GB CUDA wheels.
+
+# --- Web framework ---
 fastapi==0.136.3
 uvicorn[standard]==0.34.0
 pydantic==2.13.4
-pydantic-settings==2.14.2
 python-dotenv==1.2.2
 
-# Vector DB & Embeddings (Supabase pgvector)
-vecs==0.0.22
-sentence-transformers==6.0.1
-langchain==1.4.0
-langchain-community==0.4.2
-langchain-core==1.6.2
-langchain-text-splitters==0.1.2
-tiktoken==0.14.0
+# --- Vector store ---
+# Default backend is the in-process NumPy index (see scripts/vector_store.py).
+# Range rather than a hard pin: torch and sentence-transformers both constrain
+# numpy, and an exact pin here risks an unresolvable conflict at image build.
+numpy>=1.26,<3
 
-# LLM Client (Google Gemini)
+# Optional: Supabase pgvector backend. Required only if you set SUPABASE_DB_URL.
+vecs==0.4.5
+pgvector==0.3.6
+psycopg2-binary==2.9.13
+SQLAlchemy==2.1.1
+
+# --- Embeddings ---
+sentence-transformers==6.0.1
+
+# --- LLM client (Google Gemini) ---
 google-genai==1.31.0
 
-# Utilities
-httpx==0.28.1
-requests==2.34.2
+# --- Document parsing ---
+pyyaml==6.0.3

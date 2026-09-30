@@ -1,41 +1,50 @@
-# RAG API Dockerfile for Render
-# Uses Python 3.11 slim, vectors stored in Supabase (pgvector)
+# AI Textbook RAG API - Hugging Face Docker Space
+# The Space serves the FastAPI app on 0.0.0.0:7860 (see README.md front matter).
 
 FROM python:3.11-slim
 
-# Set working directory
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    HF_HOME=/home/user/.cache/huggingface \
+    TOKENIZERS_PARALLELISM=false \
+    OMP_NUM_THREADS=1 \
+    EMBEDDING_MODEL=all-MiniLM-L6-v2
+
 WORKDIR /app
 
-# Install system dependencies
+# Build toolchain for wheels that need compiling (sentence-transformers, vecs).
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+        build-essential \
+        curl \
+    && rm -rf /var/lib/apt lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# CPU-only torch first: the default PyPI wheel bundles CUDA and is multiple GB.
+RUN pip install --no-cache-dir \
+        torch==2.9.1 \
+        --index-url https://download.pytorch.org/whl/cpu
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY scripts/rag_api.py .
-COPY scripts/ingest_rag.py .
+# Pre-download the embedding model at build time so the Space starts warm.
+RUN python -c "\
+from sentence_transformers import SentenceTransformer; \
+SentenceTransformer('${EMBEDDING_MODEL:-all-MiniLM-L6-v2}')" || \
+    echo 'WARN: embedding model pre-download failed; it will download at runtime'
 
-# Copy docs/ directory (used by ingestion script)
+COPY scripts/rag_api.py scripts/ingest_rag.py scripts/chunking.py scripts/vector_store.py ./
 COPY docs/ ./docs/
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
+# HF Spaces require the service to run as uid 1000.
+RUN useradd --create-home --uid 1000 user \
+    && mkdir -p /home/user/.cache/huggingface \
+    && chown -R user:user /app /home/user
+USER user
 
-# Expose port (Render provides PORT env var)
-EXPOSE 8000
+EXPOSE 7860
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout=5)" || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=3 \
+    CMD curl -fsS http://localhost:7860/health || exit 1
 
-# Run the API server
 CMD ["python", "rag_api.py"]

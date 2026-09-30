@@ -1,14 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import './ChatbotWidget.css';
 
-const getChatApiUrl = () => {
-  const url = (import.meta.env?.VITE_CHAT_API_URL || '').trim();
+/**
+ * Backend URL comes from exactly one build-time variable: VITE_CHAT_API_URL.
+ *
+ * Docusaurus does not support `import.meta.env`, so docusaurus.config.js reads
+ * the variable and re-exposes it through `siteConfig.customFields.chatApiUrl`.
+ * That is the only place the backend address is configured.
+ *
+ * Production: VITE_CHAT_API_URL=https://<hf-user>-<space>.hf.space/api/chat
+ * Local dev:  unset, and the site is served from localhost -> local backend.
+ */
+const resolveChatApiUrl = (configuredUrl) => {
+  const url = (configuredUrl || '').trim();
   if (url) return url;
-  // Fallback for local development only
-  if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') {
-    return 'http://localhost:8000/api/chat';
+
+  if (typeof window !== 'undefined') {
+    const { hostname, protocol } = window.location;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return `${protocol}//${hostname}:7860/api/chat`;
+    }
   }
-  return '/api/chat';
+
+  // Nothing configured: fail loudly instead of silently hitting a same-origin
+  // path that does not exist.
+  return null;
+};
+
+/** Free HF Spaces sleep when idle and can take a while to cold-start. */
+const REQUEST_TIMEOUT_MS = 90_000;
+const WAKE_RETRY_DELAY_MS = 12_000;
+
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** True for network-level failures, timeouts and 5xx - i.e. "try again". */
+const isRetryable = (error) => {
+  if (error?.name === 'AbortError') return true;
+  if (error?.retryable) return true;
+  return error instanceof TypeError;
+};
+
+class RequestError extends Error {
+  constructor(message, { retryable = false } = {}) {
+    super(message);
+    this.name = 'RequestError';
+    this.retryable = retryable;
+  }
+}
+
+const postChat = async (apiUrl, question, signal) => {
+  const timeoutController = new AbortController();
+  const timer = setTimeout(() => timeoutController.abort(), REQUEST_TIMEOUT_MS);
+
+  const onOuterAbort = () => timeoutController.abort();
+  signal?.addEventListener('abort', onOuterAbort);
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+      signal: timeoutController.signal,
+    });
+
+    // A sleeping Space often answers with a gateway error before it is up.
+    if (response.status === 502 || response.status === 503 || response.status === 504) {
+      throw new RequestError(
+        'The assistant backend is waking up. Retrying...',
+        { retryable: true },
+      );
+    }
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {
+      throw new RequestError(
+        `The server returned a non-JSON response (${response.status}).`,
+        { retryable: response.status >= 500 },
+      );
+    }
+
+    if (!response.ok) {
+      const detail = data?.detail || response.statusText || 'Unknown error';
+      throw new RequestError(`API error ${response.status}: ${detail}`, {
+        retryable: response.status >= 500,
+      });
+    }
+
+    return data;
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      if (signal?.aborted) throw error;
+      throw new RequestError(
+        'The request timed out. The server may be starting up - please try again.',
+        { retryable: true },
+      );
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onOuterAbort);
+  }
 };
 
 const RobotSVG = ({ state, isDark }) => {
@@ -264,15 +359,20 @@ const RobotSVG = ({ state, isDark }) => {
 };
 
 const ChatbotWidget = () => {
+  const { siteConfig } = useDocusaurusContext();
+  const apiUrl = resolveChatApiUrl(siteConfig?.customFields?.chatApiUrl);
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [robotState, setRobotState] = useState('idle');
   const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(null);
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef(null);
   const widgetRef = useRef(null);
+  const abortRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -293,50 +393,65 @@ const ChatbotWidget = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Abort any in-flight request if the widget unmounts mid-flight.
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage = { role: 'user', content: input.trim() };
-    setMessages(prev => [...prev, userMessage]);
     const question = input.trim();
+    setMessages((prev) => [...prev, { role: 'user', content: question }]);
     setInput('');
     setIsLoading(true);
     setRobotState('thinking');
+    setStatusMessage(null);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     try {
-      const apiUrl = getChatApiUrl();
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const detail = data?.detail || response.statusText || 'Unknown error';
-        throw new Error(`API error ${response.status}: ${detail}`);
+      if (!apiUrl) {
+        throw new RequestError(
+          'No backend configured. Set VITE_CHAT_API_URL to your Hugging Face Space chat endpoint.',
+        );
       }
 
-      const botMessage = {
-        role: 'assistant',
-        content: data.answer,
-        sources: data.sources,
-        confidence: data.confidence,
-      };
-      setMessages(prev => [...prev, botMessage]);
+      let data;
+      try {
+        data = await postChat(apiUrl, question, controller.signal);
+      } catch (firstError) {
+        if (controller.signal.aborted || !isRetryable(firstError)) throw firstError;
+
+        // Free Spaces sleep when idle: surface a wake-up state, wait, retry once.
+        setStatusMessage('Server waking up...');
+        setRobotState('thinking');
+        await sleep(WAKE_RETRY_DELAY_MS);
+        if (controller.signal.aborted) return;
+        setStatusMessage('Still starting, retrying...');
+        data = await postChat(apiUrl, question, controller.signal);
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: data.answer,
+          sources: data.sources,
+          confidence: data.confidence,
+        },
+      ]);
       setRobotState('speaking');
       setTimeout(() => setRobotState('idle'), 2000);
     } catch (error) {
-      const errorMessage = {
-        role: 'assistant',
-        content: `⚠️ ${error.message || 'Sorry, I encountered an error. Please try again later.'}`,
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      if (error?.name === 'AbortError') return; // component unmounted
+      const message = error?.message || 'Sorry, I encountered an error. Please try again later.';
+      setMessages((prev) => [...prev, { role: 'assistant', content: `⚠️ ${message}` }]);
       setRobotState('idle');
     } finally {
+      abortRef.current = null;
       setIsLoading(false);
+      setStatusMessage(null);
     }
   };
 
@@ -444,6 +559,9 @@ const ChatbotWidget = () => {
               <div className="message-bubble">
                 <div className="typing-indicator">
                   <span></span><span></span><span></span>
+                </div>
+                <div className="loading-status" role="status" aria-live="polite">
+                  {statusMessage || 'Searching the textbook...'}
                 </div>
               </div>
             </div>

@@ -1,155 +1,152 @@
-# RAG Backend Deployment Guide (Render + Supabase pgvector)
+# RAG Backend Deployment — Hugging Face Docker Space
 
-This guide covers deploying the Python FastAPI RAG backend to Render,
-using Supabase (pgvector) for vector storage and Google Gemini for LLM generation.
+The chatbot backend runs as a **Hugging Face Docker Space**.
 
+> The frontend (this Docusaurus site) is still on Vercel at
+> `https://physical-ai-textbook.vercel.app`.
+
+## 1. Create the Space
+
+1. Go to <https://huggingface.co/new-space>
+2. Choose **Docker** as the SDK
+3. Name it (e.g. `ai-textbook-rag`) and pick a Docker `null` license
+4. Do **not** clone the starter - push this repo's `Dockerfile` over it
+
+The Space reads its configuration from the YAML front matter at the top of
+`README.md`:
+
+```yaml
 ---
-
-## Prerequisites
-
-1. **Get your Gemini API key:**
-   - Go to https://aistudio.google.com/apikey
-   - Create a new API key
-   - Copy it for use below
-
-2. **Set up Supabase:**
-   - Go to https://supabase.com → New Project
-   - Run the SQL migration in `supabase/migrations/001_create_textbook_chunks.sql`
-   - Copy your Project URL and service_role key from Settings → API
-
-3. **GitHub repo** with this codebase pushed
-
+title: AI Textbook RAG API
+sdk: docker
+app_port: 7860
 ---
-
-## Step 1: Run the Supabase SQL Migration
-
-In the Supabase SQL Editor, run the contents of
-[`supabase/migrations/001_create_textbook_chunks.sql`](./supabase/migrations/001_create_textbook_chunks.sql):
-
-```sql
-CREATE EXTENSION IF NOT EXISTS vector;
-
-CREATE TABLE IF NOT EXISTS textbook_chunks (
-    id          TEXT PRIMARY KEY,
-    content     TEXT NOT NULL,
-    embedding   vector(384) NOT NULL,
-    metadata    JSONB NOT NULL DEFAULT '{}'::jsonb
-);
-
-CREATE INDEX IF NOT EXISTS textbook_chunks_embedding_idx
-    ON textbook_chunks
-    USING hnsw (embedding vector_cosine_ops)
-    WITH (m = 16, ef_construction = 64);
 ```
 
----
-
-## Step 2: Deploy to Render
-
-### Option A: Render Blueprint (Recommended)
-
-1. Go to https://dashboard.render.com
-2. Click **Deploy New Web Service**
-3. Connect your GitHub repo: `Suleman-Sehar/ai-textbook`
-4. Render detects `render.yaml` automatically
-5. Click **Apply**
-
-### Option B: Manual Web Service
-
-1. Go to https://dashboard.render.com → **New Web Service**
-2. Connect GitHub repo
-3. Build Command: `pip install -r requirements.txt`
-4. Start Command: `python scripts/rag_api.py`
-5. Plan: **Starter** ($7/mo, always-on) or **Free** (spins down after 15min)
-
----
-
-## Step 3: Set Environment Variables on Render
-
-Go to **Settings → Environment Variables** and add:
-
-| Key | Value | Source |
-|-----|-------|--------|
-| `SUPABASE_URL` | `https://wmiedukhvkickdzyxstl.supabase.co` | Supabase → Settings → API → Project URL |
-| `SUPABASE_SERVICE_KEY` | `your-service-role-key` | Supabase → Settings → API → service_role key |
-| `GEMINI_API_KEY` | `your-gemini-key` | Google AI Studio |
-| `PORT` | `8000` | (default) |
-
----
-
-## Step 4: Run Ingestion
-
-After the service is live, run the ingestion script to populate the
-`textbook_chunks` table with embeddings:
+## 2. Push the backend
 
 ```bash
-# Option A: Run locally (requires .env with SUPABASE_URL + SUPABASE_SERVICE_KEY)
+huggingface-cli login          # or: hf auth login
+git remote add space https://huggingface.co/spaces/<hf-username>/<space-name>
+git push space main
+```
+
+Watch the build under **Settings -> Logs**, or locally:
+
+```bash
+watch curl -s https://Suleman-sehar-ai-textbook-backend.hf.space/health
+```
+
+The Space URL is `https://Suleman-sehar-ai-textbook-backend.hf.space`.
+
+> **Requires an HF PRO subscription.** Creating a Docker Space on free
+> `cpu-basic` hardware now fails with `HTTP 402`: *"hosting Gradio and Docker
+> Spaces on free cpu-basic requires a PRO subscription."* Subscribe at
+> <https://huggingface.co/pro>, or run the same Dockerfile on another host
+> (any Docker platform that binds `0.0.0.0:7860` works unchanged).
+
+> The repository contains both the Docusaurus frontend and the FastAPI backend.
+> `main` is the frontend's branch; the Space's own git history lives on the
+> `space` remote, so pushing to `space` is safe and independent of `origin`.
+
+## 3. Configure secrets
+
+Add these under **Settings -> Variables and secrets** in the Space. Mark the
+sensitive ones as secrets. `.env.example` documents every variable.
+
+Only two are required:
+
+| Name | Type | Value |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | secret | From <https://aistudio.google.com/apikey> |
+| `ALLOWED_ORIGINS` | variable | `https://physical-ai-textbook.vercel.app` |
+
+That is enough: with no Supabase variables set the API builds its index
+in-process from the committed `docs/` markdown, so there is no database to
+provision and no ingest step.
+
+### Optional: persistent Supabase index
+
+Set `SUPABASE_DB_URL` to keep the index across restarts and skip the embedding
+pass on cold start:
+
+| Name | Type | Value |
+| --- | --- | --- |
+| `SUPABASE_DB_URL` | secret | Supabase → Project Settings → Database → Connection string (URI), session pooler |
+
+```
+postgresql://postgres.<project-ref>:<db-password>@aws-0-<region>.pooler.supabase.com:5432/postgres
+```
+
+Then run `create extension if not exists vector;` once in the Supabase SQL
+editor, and run `python scripts/ingest_rag.py` to populate the collection. If
+Supabase is configured but unreachable, the API logs a warning and falls back
+to the in-memory index rather than failing.
+
+## 4. Verify
+
+```bash
+# 1. health - expect "ready": true, "backend": "memory", chunks ~361
+curl https://Suleman-sehar-ai-textbook-backend.hf.space/health
+
+# 2. a real grounded question
+curl -X POST https://Suleman-sehar-ai-textbook-backend.hf.space/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What is the ROS 2 perception pipeline?"}'
+```
+
+The response should contain an `answer` drawn from the textbook plus a
+`sources` array naming the module, title and section it came from.
+
+Interactive API docs are at `/docs`.
+
+## 5. Point the frontend at the Space
+
+`docusaurus.config.js` already defaults `chatApiUrl` to this Space's URL. To
+point it somewhere else, set one variable in the **Vercel** project settings and
+redeploy:
+
+```
+VITE_CHAT_API_URL=https://<hf-username>-<space-name>.hf.space/api/chat
+```
+
+This is the only backend reference in the frontend. `docusaurus.config.js` reads
+it at build time and exposes it to the browser through
+`siteConfig.customFields.chatApiUrl`, because Docusaurus does not support
+`import.meta.env` — a bug that previously made the chatbot fail in production
+regardless of backend.
+
+The widget handles Free Spaces sleeping: it shows a "server waking up" message,
+times out after 90s, and retries once after 12s.
+
+## Re-indexing
+
+With the default in-memory backend there is nothing to re-index — the index is
+built from `docs/` at every cold start. Push your `docs/` changes and redeploy.
+
+For a Supabase-backed index, run the script locally after editing `docs/`:
+
+```bash
+python -m pip install -r requirements.txt
 python scripts/ingest_rag.py
-
-# Option B: Run on Render (one-time command)
-render run --service ai-textbook-rag --command "python scripts/ingest_rag.py"
 ```
 
-This will embed all 361 textbook chunks and insert them into Supabase.
+It prints the chunk count per module when finished. Chunk ids are
+`<doc_id>_<chunk_index>`, so re-running is idempotent.
 
----
-
-## Step 5: Update Vercel Frontend
-
-1. Go to Vercel → **Settings → Environment Variables**
-2. Set:
-   ```
-   VITE_CHAT_API_URL = https://your-render-service.onrender.com/api/chat
-   ```
-3. **Redeploy** the Vercel project
-
----
-
-## Architecture
-
-```
-┌─────────────────┐     HTTPS      ┌──────────────────┐
-│  Vercel (Next)  │ ──────────────► │  Render          │
-│  Frontend       │  /api/chat     │  Python FastAPI  │
-│  (Static + SSR) │                 │  + Gemini LLM    │
-└─────────────────┘                 └────────┬─────────┘
-                                             │
-                                    PostgreSQL + pgvector
-                                    (Supabase Cloud)
-```
-
----
-
-## Environment Variables Summary
-
-| Variable | Where Set | Purpose |
-|----------|-----------|---------|
-| `SUPABASE_URL` | Render | Supabase project URL |
-| `SUPABASE_SERVICE_KEY` | Render | Supabase service_role key (secret) |
-| `GEMINI_API_KEY` | Render | Google Gemini API key (secret) |
-| `VITE_CHAT_API_URL` | Vercel | Frontend backend URL (public) |
-
----
+**Changing `EMBEDDING_MODEL` requires a full re-ingest.** `all-MiniLM-L6-v2`
+produces 384-dim vectors, and vectors from different models are not comparable.
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| "Collection does not exist" | Run the SQL migration in Supabase |
-| "relation textbook_chunks does not exist" | Verify migration ran successfully |
-| "Module not found: vecs" | Ensure `vecs==0.0.22` in requirements.txt |
-| "vector(384) dimension mismatch" | Verify embedding model is all-MiniLM-L6-v2 |
-| CORS errors | FastAPI allows all origins (`*`) |
-| Gemini 429 rate limit | Free tier is 15 RPM; implement retry/backoff if needed |
-
----
-
-## Security Notes
-
-- Never commit `.env` to version control
-- Use platform secret management for `SUPABASE_SERVICE_KEY` and `GEMINI_API_KEY`
-- CORS is open (`*`) for development; restrict in production if needed:
-  ```python
-  # In rag_api.py, change:
-  allow_origins=["https://your-vercel-domain.vercel.app"]
-  ```
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Space creation returns HTTP 402 | Docker Spaces on free `cpu-basic` now require an HF PRO subscription | Subscribe to PRO, or host the same Dockerfile elsewhere |
+| Build fails at `pip install` | A pin in `requirements.txt` does not exist on PyPI | Check the build log for the package name |
+| Space sleeps mid-conversation | Free Spaces sleep after inactivity | The widget already retries once; ask again to wake it |
+| `/health` shows `"ready": false` | Read `last_error` in the same payload | Usually a bad `GEMINI_API_KEY` or a failed model download |
+| `POST /api/chat` → `503 "Backend not ready"` | Initialisation failed | Check Space logs |
+| `POST /api/chat` → `502 LLM error` | Gemini rejected the call | Check `GEMINI_API_KEY` and the quota for the project |
+| Browser CORS error | Origin not allowed | Add it to `ALLOWED_ORIGINS`, comma separated, no trailing slash |
+| Answers are empty or wrong | Stale index or wrong embedding model | Redeploy to rebuild, or re-run `scripts/ingest_rag.py` |
+| `chunks_in_db: 0` | Index still building | Wait for `RAG ready` in the Space logs |

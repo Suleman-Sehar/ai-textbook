@@ -12,10 +12,22 @@ const config = {
   favicon: undefined, // Temporarily remove favicon requirement
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://physical-ai-textbook.vercel.app',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
+
+  // Build-time configuration exposed to the browser.
+  // Docusaurus bundles `import.meta.env` away, so the backend URL must be
+  // passed through `customFields` to reach the client at all.
+  customFields: {
+    // Full URL of the RAG chat endpoint. Defaults to the Hugging Face Space and
+    // is overridden by VITE_CHAT_API_URL in the build environment (Vercel).
+    chatApiUrl:
+      process.env.VITE_CHAT_API_URL ||
+      'https://Suleman-sehar-ai-textbook-backend.hf.space/api/chat',
+    supportUrl: 'https://github.com/ai-textbook/physical-ai-textbook/issues',
+  },
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.

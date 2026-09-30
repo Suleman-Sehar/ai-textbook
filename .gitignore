@@ -22,6 +22,7 @@ yarn-error.log*
 # =========================
 .env
 .env.*
+!.env.example
 *.local
 
 # =========================
@@ -30,6 +31,14 @@ yarn-error.log*
 chroma_db/
 *.sqlite3
 *.bin
+
+# =========================
+# Python (RAG backend)
+# =========================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
 # =========================
 # Vercel
