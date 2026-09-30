@@ -11,7 +11,6 @@ Deployed as a Hugging Face Docker Space on ``0.0.0.0:7860``.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import threading
@@ -28,11 +27,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 
 from chunking import load_markdown_files
+from embedder import get_embedder
 from vector_store import (
     DEFAULT_EMBEDDING_DIMENSION,
+    PrecomputedIndex,
     SupabaseIndex,
     build_memory_index,
     clear_collection,
@@ -64,17 +64,20 @@ def _int_env(name: str, default: int) -> int:
 
 
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_textbook")
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 TOP_K = _int_env("TOP_K", 5)
 MAX_CONTEXT_CHARS = _int_env("MAX_CONTEXT_CHARS", 8000)
-# Generous by default: Free Spaces cold-start, and embedding a query on CPU
-# torch can take a few seconds.
+# Render injects PORT; HF Spaces expect 7860. uvicorn reads the same variable.
 PORT = _int_env("PORT", 7860)
 LLM_TIMEOUT_MS = _int_env("LLM_TIMEOUT_MS", 60_000)
 RETRIEVE_TIMEOUT_S = _int_env("RETRIEVE_TIMEOUT_S", 30)
 WARMUP_ON_START = os.getenv("WARMUP_ON_START", "true").lower() in {"1", "true", "yes"}
 DOCS_DIR = Path(os.getenv("DOCS_DIR", "docs"))
+INDEX_DIR = Path(os.getenv("INDEX_DIR", str(Path(__file__).resolve().parent.parent / "data")))
+# A cold Free Render container must answer /health immediately, before the
+# model and index finish loading.
+MAX_INIT_SECONDS = _int_env("MAX_INIT_SECONDS", 120)
 
 DEFAULT_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -117,7 +120,7 @@ NO_CONTEXT_ANSWER = (
 # Lazily-initialised application state
 # --------------------------------------------------------------------------- #
 
-# Module-level import of Supabase/vecs/SentenceTransformer would make the whole
+# Module-level import of Supabase/vecs/the embedding model would make the whole
 # app unimportable (and /health unreachable) whenever credentials or the network
 # are unavailable - which is what takes a hosted backend down entirely.
 # Initialise on first use behind a lock instead.
@@ -125,12 +128,14 @@ NO_CONTEXT_ANSWER = (
 @dataclass
 class State:
     index: Any = None
-    embedding_model: Any = None
+    embedder: Any = None
     genai_client: Any = None
     chunks: int = -1
     backend: str = ""
+    embed_backend: str = ""
     last_error: str = ""
     ready: bool = False
+    started_at: float = 0.0
     lock: threading.Lock = field(default_factory=threading.Lock)
 
 
@@ -147,12 +152,12 @@ def build_genai_client() -> Any:
     )
 
 
-def _ingest_to_supabase(model) -> None:
+def _ingest_to_supabase(embedder) -> None:
     """Chunk + embed ``docs/`` and upsert into the pgvector collection."""
     chunks = load_markdown_files(DOCS_DIR)
     logger.info("Chunked %d sections from %s", len(chunks), DOCS_DIR)
 
-    embeddings = model.encode([c.text for c in chunks], batch_size=32, show_progress_bar=True)
+    embeddings = embedder.embed([c.text for c in chunks])
 
     collection = get_collection(DEFAULT_EMBEDDING_DIMENSION)
     clear_collection(collection)
@@ -163,7 +168,7 @@ def _ingest_to_supabase(model) -> None:
     logger.info("Ingested %d records into Supabase collection '%s'", written, COLLECTION_NAME)
 
 
-def _build_index(model) -> None:
+def _build_index(embedder) -> None:
     """Select and initialise the vector index backend."""
     if supabase_is_configured():
         logger.info("Supabase detected - using pgvector via vecs")
@@ -172,7 +177,7 @@ def _build_index(model) -> None:
             total = len(collection)
             if total <= 0:
                 logger.warning("Collection '%s' is empty - ingesting", COLLECTION_NAME)
-                _ingest_to_supabase(model)
+                _ingest_to_supabase(embedder)
             else:
                 state.index = SupabaseIndex(collection)
                 state.chunks = total
@@ -180,15 +185,26 @@ def _build_index(model) -> None:
             state.backend = "supabase"
             return
         except Exception as exc:
-            # Never let a store outage take the whole chatbot down: the
-            # textbook is committed, so an in-process index always works.
+            # Never let a store outage take the whole chatbot down: the textbook
+            # is committed, so a local index always works.
             logger.error(
-                "Supabase unavailable (%s) - falling back to the in-memory index", exc
+                "Supabase unavailable (%s) - falling back to a local index", exc
             )
-            state.last_error = f"Supabase unavailable ({exc}); using in-memory index"
+            state.last_error = f"Supabase unavailable ({exc}); using local index"
 
-    logger.info("Building in-memory index from %s ...", DOCS_DIR)
-    state.index = build_memory_index(model, DOCS_DIR)
+    # Fast path: load the committed index instead of re-embedding the textbook.
+    if PrecomputedIndex.available(INDEX_DIR):
+        state.index = PrecomputedIndex(INDEX_DIR)
+        state.chunks = len(state.index)
+        state.backend = "precomputed"
+        return
+
+    logger.warning(
+        "No precomputed index in '%s' - building one from %s at startup. "
+        "Run: python scripts/build_index.py",
+        INDEX_DIR, DOCS_DIR,
+    )
+    state.index = build_memory_index(embedder, DOCS_DIR)
     state.chunks = len(state.index)
     state.backend = "memory"
 
@@ -207,14 +223,16 @@ def ensure_ready() -> State:
         if state.genai_client is None:
             logger.warning("GEMINI_API_KEY not set - LLM answers will fail")
 
-        state.embedding_model = SentenceTransformer(EMBEDDING_MODEL)
-        logger.info("Embedding model ready (%s)", EMBEDDING_MODEL)
+        # The model is needed for query embeddings either way; loading it is
+        # ~2s and ~180MB with ONNX Runtime.
+        state.embedder = get_embedder(EMBEDDING_MODEL)
+        state.embedder.load()
+        state.embed_backend = state.embedder.backend
+        logger.info("Embedding model ready (%s via %s)", EMBEDDING_MODEL, state.embedder.backend)
 
-        _build_index(state.embedding_model)
+        _build_index(state.embedder)
 
         state.ready = True
-        if not state.last_error:
-            state.last_error = ""
         logger.info("RAG ready (backend=%s chunks=%d)", state.backend, state.chunks)
         return state
 
@@ -228,7 +246,7 @@ def reset_state() -> None:
     with state.lock:
         state.ready = False
         state.index = None
-        state.embedding_model = None
+        state.embedder = None
         state.genai_client = None
 
 
@@ -238,18 +256,20 @@ def reset_state() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Warm up in the background so a cold Space answers /health immediately
-    # instead of blocking startup behind a model download.
+    # Start listening FIRST and load in the background. Render's health check
+    # would otherwise kill a container that takes a moment to load its model,
+    # and the frontend needs a fast /health while the server wakes.
+    state.started_at = time.monotonic()
     if WARMUP_ON_START:
-        async def warm() -> None:
+        def warm() -> None:
             try:
-                await anyio.to_thread.run_sync(ensure_ready)
+                ensure_ready()
             except Exception as exc:  # pragma: no cover - logged, retried per request
                 logger.error("Warmup failed: %s", exc)
                 state.last_error = str(exc)
                 reset_state()
 
-        asyncio.create_task(warm())
+        threading.Thread(target=warm, name="rag-warmup", daemon=True).start()
     yield
 
 
@@ -304,27 +324,24 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Liveness + readiness. Always 200 so the Space is not killed while
-    dependencies are still initialising; inspect the payload for readiness."""
+    """Fast liveness + readiness.
+
+    Never blocks on initialisation: a container that has just woken answers
+    immediately with ``ready: false`` so Render's health check passes while the
+    model and index load in the background.
+    """
     ready = state.ready
     chunks = state.chunks
     error = state.last_error
-
-    if not ready:
-        # Cheap, non-blocking probe so a restarted Space reports real status.
-        try:
-            await anyio.to_thread.run_sync(_probe_readiness)
-            ready = state.ready
-            chunks = state.chunks
-            error = state.last_error
-        except Exception as exc:
-            error = str(exc)
+    elapsed = round(time.monotonic() - state.started_at, 2) if state.started_at else None
 
     return {
         "status": "healthy" if ready else "starting",
         "ready": ready,
         "chunks_in_db": chunks,
         "backend": state.backend or None,
+        "embed_backend": state.embed_backend or None,
+        "uptime_s": elapsed,
         "embedding_model": EMBEDDING_MODEL,
         "llm_model": GEMINI_MODEL,
         "llm_configured": bool(os.getenv("GEMINI_API_KEY")),
@@ -333,22 +350,12 @@ async def health_check():
     }
 
 
-def _probe_readiness() -> None:
-    try:
-        ensure_ready()
-    except Exception as exc:
-        logger.warning("Readiness probe failed: %s", exc)
-        state.last_error = str(exc)
-        reset_state()
-
-
 # --------------------------------------------------------------------------- #
 # RAG
 # --------------------------------------------------------------------------- #
 
 def retrieve_context(question: str, top_k: int) -> List[Dict[str, Any]]:
-    query_embedding = state.embedding_model.encode([question])
-    return state.index.search(query_embedding[0], top_k)
+    return state.index.search(state.embedder.embed_query(question), top_k)
 
 
 def build_context(chunks: List[Dict[str, Any]]) -> tuple[str, List[SourceCitation]]:
@@ -448,8 +455,16 @@ async def chat(request: ChatRequest):
     top_k = request.top_k or TOP_K
     started = time.monotonic()
 
+    # A request can arrive before the background warmup finishes. Wait for it,
+    # but never past MAX_INIT_SECONDS: Render kills containers that stall on a
+    # health check, and a bounded wait returns an honest 503 instead of hanging.
     try:
-        await anyio.to_thread.run_sync(ensure_ready)
+        with anyio.fail_after(MAX_INIT_SECONDS):
+            await anyio.to_thread.run_sync(ensure_ready)
+    except TimeoutError:
+        raise HTTPException(status_code=503, detail="Backend is still starting up, please retry shortly.")
+    except HTTPException:
+        raise
     except Exception as exc:
         logger.error("Initialisation failed: %s", exc)
         state.last_error = str(exc)
@@ -476,5 +491,6 @@ async def chat(request: ChatRequest):
 if __name__ == "__main__":
     import uvicorn
 
+    # Render supplies PORT; HF Spaces expect 7860.
     logger.info("Starting RAG API on 0.0.0.0:%d", PORT)
     uvicorn.run(app, host="0.0.0.0", port=PORT, timeout_keep_alive=75)

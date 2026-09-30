@@ -8,7 +8,7 @@ build
 .cache
 coverage
 
-# Secrets - the Space receives these as HF Secrets instead.
+# Secrets - the service receives these as platform env vars instead.
 .env
 .env.*
 !.env.example
@@ -22,12 +22,12 @@ coverage
 .history
 .kilo
 
-# Local vector store leftovers (Supabase pgvector is the real store)
+# Local vector store leftovers (the real store is data/ or Supabase)
 chroma_db
 chroma_db_test
-data
 
-# Not needed by the API image
+# Not needed by the API image.
+# NOTE: keep docs/ and data/ - the API loads data/index.* at startup.
 docs/.vitepress
 templates
 diagrams

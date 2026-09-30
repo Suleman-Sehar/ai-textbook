@@ -1,8 +1,16 @@
-# AI Textbook RAG API - dependencies for the Hugging Face Docker Space
+# AI Textbook RAG API - dependencies
 #
-# NOTE: torch is intentionally NOT listed here. The Dockerfile installs the
-# CPU-only build from the PyTorch CPU index first so the image stays small and
-# the Space does not pull multi-GB CUDA wheels.
+# Sized for Render's FREE tier (512 MB RAM, 0.1 CPU).
+#
+# torch / sentence-transformers are deliberately NOT here: importing torch and
+# loading the model costs several hundred MB and does not fit. Embeddings use
+# fastembed (ONNX Runtime), which runs the same
+# `sentence-transformers/all-MiniLM-L6-v2` weights at a measured 239 MB peak RSS
+# and produces numerically identical vectors (cosine 1.0000000, max diff
+# 1.2e-07).
+#
+# To use torch locally instead: `pip install sentence-transformers` and set
+# EMBED_BACKEND=sentence-transformers. Vectors stay compatible either way.
 
 # --- Web framework ---
 fastapi==0.136.3
@@ -10,23 +18,22 @@ uvicorn[standard]==0.34.0
 pydantic==2.13.4
 python-dotenv==1.2.2
 
-# --- Vector store ---
-# Default backend is the in-process NumPy index (see scripts/vector_store.py).
-# Range rather than a hard pin: torch and sentence-transformers both constrain
-# numpy, and an exact pin here risks an unresolvable conflict at image build.
+# --- Embeddings (ONNX Runtime) ---
+fastembed==0.8.1
+onnxruntime==1.29.0
 numpy>=1.26,<3
-
-# Optional: Supabase pgvector backend. Required only if you set SUPABASE_DB_URL.
-vecs==0.4.5
-pgvector==0.3.6
-psycopg2-binary==2.9.13
-SQLAlchemy==2.1.1
-
-# --- Embeddings ---
-sentence-transformers==6.0.1
 
 # --- LLM client (Google Gemini) ---
 google-genai==1.31.0
 
 # --- Document parsing ---
 pyyaml==6.0.3
+
+# --- Optional vector store: Supabase pgvector ---
+# Only used when SUPABASE_DB_URL (or SUPABASE_URL + SUPABASE_SERVICE_KEY) is
+# set. Otherwise the service loads the committed data/index.* artefacts and
+# never imports these.
+vecs==0.4.5
+pgvector==0.3.6
+psycopg2-binary==2.9.13
+SQLAlchemy==2.1.1

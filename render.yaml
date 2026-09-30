@@ -1,0 +1,74 @@
+# Render Blueprint for the AI Textbook RAG backend
+#
+# Deploy with: Render dashboard -> New -> Blueprint -> point at this repo.
+# Render pre-fills everything except the secret values (sync: false), which you
+# paste in during setup.
+#
+# The service binds $PORT (Render injects it) and is sized for the free tier:
+# 512 MB RAM, 0.1 CPU. Embeddings run on ONNX Runtime (fastembed), never torch.
+
+services:
+  - type: web
+    name: ai-textbook-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    # Free services sleep after 15 min idle and take ~1 min to wake. The frontend
+    # pings /health when the chat widget opens and retries once, so a sleep shows
+    # up as a short "server waking up" pause rather than an error.
+    autoDeploy: true
+
+    envVars:
+      # --- Required secrets (sync: false = Render prompts you to enter these) ---
+      - key: GEMINI_API_KEY
+        sync: false
+
+      # --- CORS: your frontend origins, comma separated, no trailing slash ---
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+      # --- Configuration (sync: true = Render sets these from the values below) ---
+      - key: COLLECTION_NAME
+        value: ai_textbook
+
+      # Must match the model recorded in data/index.json. Changing it without
+      # rebuilding the index breaks retrieval.
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
+
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+
+      # fastembed (ONNX). Use "sentence-transformers" only if you pip-installed
+      # torch - that will exceed the free tier's memory limit.
+      - key: EMBED_BACKEND
+        value: fastembed
+
+      - key: INDEX_DIR
+        value: /app/data
+
+      - key: TOP_K
+        value: "5"
+
+      - key: MAX_CONTEXT_CHARS
+        value: "8000"
+
+      - key: LLM_TIMEOUT_MS
+        value: "60000"
+
+      - key: RETRIEVE_TIMEOUT_S
+        value: "30"
+
+      # Load the model and index in a background thread so /health answers
+      # immediately on a cold container.
+      - key: WARMUP_ON_START
+        value: "true"
+
+      - key: LOG_LEVEL
+        value: INFO
+
+      # Leave SUPABASE_* unset to use the committed data/index.* artefacts.
+      # Set SUPABASE_DB_URL only if you want a persistent pgvector index.

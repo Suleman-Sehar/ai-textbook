@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 """Vector store abstraction for the AI Textbook RAG backend.
 
-Two interchangeable backends, selected automatically:
+Three interchangeable backends, selected automatically in this order:
 
-* ``MemoryIndex``  - default. Embeddings are built in-process from the committed
-  ``docs/`` markdown at startup and held in a NumPy matrix. No external service,
-  nothing to provision, and correct on a Hugging Face Space whose disk is
-  ephemeral because the index is rebuilt from source on every cold start.
-  The textbook is only ~360 chunks, so this costs a few seconds of CPU.
+* ``PrecomputedIndex`` - default. Loads ``data/index.npy`` + ``data/index.json``
+  committed to the repo. Loads in milliseconds, which is what makes the service
+  viable on Render's free tier (0.1 CPU, where embedding 361 chunks at startup
+  would cost ~30s). Rebuild with ``python scripts/build_index.py``.
+
+* ``MemoryIndex`` - fallback. Embeds ``docs/`` in-process at startup when the
+  precomputed files are missing. Correct but slow to start.
 
 * ``SupabaseIndex`` - opt-in, selected when ``SUPABASE_DB_URL`` (or
   ``SUPABASE_URL`` + ``SUPABASE_SERVICE_KEY``) is set. Keeps the index in
-  Supabase pgvector via ``vecs`` so cold starts skip the embedding pass.
+  Supabase pgvector via ``vecs`` so cold starts skip loading anything.
 
-Both expose the same interface: ``search(vector, top_k)`` returning
+All three expose the same interface: ``search(vector, top_k)`` returning
 ``[{"text", "metadata", "distance"}, ...]``, plus ``len()``.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -32,6 +35,8 @@ logger = logging.getLogger(__name__)
 
 #: all-MiniLM-L6-v2 emits 384-dimensional vectors.
 DEFAULT_EMBEDDING_DIMENSION = 384
+
+DEFAULT_INDEX_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def _as_vector(value: Any) -> np.ndarray:
@@ -48,8 +53,88 @@ def _normalise(matrix: np.ndarray) -> np.ndarray:
     return matrix / norms
 
 
-class MemoryIndex:
-    """In-process cosine-similarity index over the textbook chunks."""
+def _to_hits(ids, texts, metadata, order, distances) -> List[Dict[str, Any]]:
+    """Assemble search results from sorted index positions."""
+    return [
+        {
+            "text": texts[i],
+            "metadata": metadata[i],
+            # Cosine distance in [0, 2]; lower is a better match.
+            "distance": float(distances[i]),
+        }
+        for i in order
+    ]
+
+
+class _CosineSearch:
+    """Shared cosine-similarity search over a pre-normalised matrix."""
+
+    def __init__(self, matrix: np.ndarray, ids, texts, metadata) -> None:
+        self.matrix = matrix
+        self.ids = list(ids)
+        self.texts = list(texts)
+        self.metadata = list(metadata)
+
+    def __len__(self) -> int:
+        return self.matrix.shape[0]
+
+    def search(self, query_embedding, top_k: int = 5) -> List[Dict[str, Any]]:
+        query = _normalise(_as_vector(query_embedding).reshape(1, -1))
+        similarity = (self.matrix @ query.T).ravel()
+        distance = 1.0 - similarity
+
+        limit = max(1, min(int(top_k), len(self)))
+        # argpartition is O(n); the textbook is small so this stays cheap.
+        order = np.argpartition(distance, limit - 1)[:limit]
+        order = order[np.argsort(distance[order])]
+        return _to_hits(self.ids, self.texts, self.metadata, order, distance)
+
+
+class PrecomputedIndex(_CosineSearch):
+    """Index loaded from the committed ``data/index.*`` artefacts."""
+
+    def __init__(self, index_dir: Path = DEFAULT_INDEX_DIR) -> None:
+        npy_path = Path(index_dir) / "index.npy"
+        json_path = Path(index_dir) / "index.json"
+
+        if not npy_path.exists() or not json_path.exists():
+            raise FileNotFoundError(
+                f"Precomputed index not found in '{index_dir}'. "
+                "Run: python scripts/build_index.py"
+            )
+
+        matrix = np.load(npy_path, allow_pickle=False).astype(np.float32)
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+
+        chunks = payload.get("chunks") or []
+        if matrix.shape[0] != len(chunks):
+            raise ValueError(
+                f"index.npy has {matrix.shape[0]} rows but index.json has {len(chunks)} chunks"
+            )
+
+        expected = int(payload.get("dimension", DEFAULT_EMBEDDING_DIMENSION))
+        if matrix.shape[1] != expected:
+            raise ValueError(f"index.npy has dim {matrix.shape[1]}, expected {expected}")
+
+        ids = [c["id"] for c in chunks]
+        texts = [c.get("text", "") for c in chunks]
+        metadata = [c.get("metadata") or {} for c in chunks]
+
+        super().__init__(_normalise(matrix), ids, texts, metadata)
+        self.model_name = payload.get("embedding_model")
+        logger.info(
+            "Loaded precomputed index: %d chunks x %d dims (model=%s)",
+            matrix.shape[0], matrix.shape[1], self.model_name,
+        )
+
+    @classmethod
+    def available(cls, index_dir: Path = DEFAULT_INDEX_DIR) -> bool:
+        index_dir = Path(index_dir)
+        return (index_dir / "index.npy").exists() and (index_dir / "index.json").exists()
+
+
+class MemoryIndex(_CosineSearch):
+    """In-process index built from the markdown at startup."""
 
     def __init__(self, chunks: List[Chunk], embeddings) -> None:
         if len(chunks) != len(embeddings):
@@ -57,38 +142,14 @@ class MemoryIndex:
         if not chunks:
             raise ValueError("cannot build an index from zero chunks")
 
-        self.chunks = list(chunks)
-        self.ids = [chunk.record_id for chunk in self.chunks]
-        self.texts = [chunk.text for chunk in self.chunks]
-        self.metadata = [dict(chunk.metadata) for chunk in self.chunks]
-        self.matrix = _normalise(
-            np.vstack([_as_vector(e) for e in embeddings]).astype(np.float32)
+        matrix = np.vstack([_as_vector(e) for e in embeddings]).astype(np.float32)
+        super().__init__(
+            _normalise(matrix),
+            [chunk.record_id for chunk in chunks],
+            [chunk.text for chunk in chunks],
+            [dict(chunk.metadata) for chunk in chunks],
         )
-        logger.info("Built in-memory index: %d chunks x %d dims", *self.matrix.shape)
-
-    def __len__(self) -> int:
-        return len(self.chunks)
-
-    def search(self, query_embedding, top_k: int = 5) -> List[Dict[str, Any]]:
-        query = _normalise(_as_vector(query_embedding).reshape(1, -1))
-        # Cosine similarity in [-1, 1]; convert to distance in [0, 2] so lower
-        # is better, matching what Supabase pgvector returns.
-        similarity = (self.matrix @ query.T).ravel()
-        distance = 1.0 - similarity
-
-        limit = max(1, min(int(top_k), len(self.chunks)))
-        # argpartition is O(n); the textbook is small so this stays cheap.
-        candidates = np.argpartition(distance, limit - 1)[:limit]
-        candidates = candidates[np.argsort(distance[candidates])]
-
-        return [
-            {
-                "text": self.texts[i],
-                "metadata": self.metadata[i],
-                "distance": float(distance[i]),
-            }
-            for i in candidates
-        ]
+        logger.info("Built in-memory index: %d chunks x %d dims", *matrix.shape)
 
 
 # --------------------------------------------------------------------------- #
@@ -211,11 +272,9 @@ def supabase_is_configured() -> bool:
     )
 
 
-def build_memory_index(model, docs_dir: Path = Path("docs")) -> MemoryIndex:
-    """Chunk, embed and index ``docs_dir`` in memory."""
+def build_memory_index(embedder, docs_dir: Path = Path("docs")) -> MemoryIndex:
+    """Chunk and embed ``docs_dir`` in memory."""
     chunks = load_markdown_files(docs_dir)
     logger.info("Chunked %d sections from %s", len(chunks), docs_dir)
-
-    logger.info("Embedding %d chunks with '%s'...", len(chunks), os.getenv("EMBEDDING_MODEL"))
-    embeddings = model.encode([c.text for c in chunks], batch_size=32, show_progress_bar=True)
+    embeddings = embedder.embed([c.text for c in chunks])
     return MemoryIndex(chunks, embeddings)
