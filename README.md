@@ -18,24 +18,18 @@ over the textbook `docs/` directory, deployed as a Hugging Face Docker Space.
 | Component | Choice |
 | --- | --- |
 | Embeddings | `sentence-transformers` / `all-MiniLM-L6-v2` (384-dim) |
-| Vector store | In-process NumPy cosine index (default), or Supabase pgvector |
+| Vector store | In-process NumPy cosine index |
 | LLM | Google Gemini (`gemini-3.6-flash`) |
 | Runtime | Hugging Face Docker Space, `0.0.0.0:7860` |
 
-## Why the vector store is in-process by default
+## Why the vector store is in-process
 
 The HF disk is **ephemeral**: anything written to `/app` is wiped on rebuild and
 restart. A persisted local index would therefore be lost every time, so the
-default backend builds the index in memory from the committed `docs/` markdown
-on every cold start. The textbook is only 361 chunks (384-dim, ~0.5 MB), so
-this costs roughly 30 seconds of CPU once per cold start and then needs nothing
-else — no database to provision, no credentials, no ingest step.
-
-Set `SUPABASE_DB_URL` (or `SUPABASE_URL` + `SUPABASE_SERVICE_KEY`) to switch to
-a Supabase pgvector index instead. That keeps the index across restarts and
-skips the embedding pass on cold start, at the cost of an external service. If
-it is configured but unreachable, the API logs a warning and falls back to the
-in-memory index rather than failing.
+index is built once with `python scripts/build_index.py` and the committed
+artefacts (`data/index.npy` + `data/index.json`) are loaded in milliseconds on
+every cold start. The textbook is only 361 chunks (384-dim, ~0.5 MB), so this
+needs no database, no credentials, and no ingest step.
 
 ## Endpoints
 
@@ -49,11 +43,10 @@ Check the `ready` boolean rather than the HTTP status.
   "status": "healthy",
   "ready": true,
   "chunks_in_db": 361,
-  "backend": "memory",
+  "backend": "precomputed",
   "embedding_model": "all-MiniLM-L6-v2",
   "llm_model": "gemini-3.6-flash",
   "llm_configured": true,
-  "collection": null,
   "last_error": null
 }
 ```
@@ -87,13 +80,7 @@ Only two are required to run: `GEMINI_API_KEY` and `ALLOWED_ORIGINS`.
 | --- | --- | --- | --- |
 | `GEMINI_API_KEY` | yes | - | Google AI Studio key used for generation |
 | `ALLOWED_ORIGINS` | yes | - | Comma-separated frontend origins allowed by CORS |
-| `SUPABASE_DB_URL` | no | - | Postgres DSN used by `vecs`; enables the persistent pgvector index |
-| `SUPABASE_URL` | no | - | Supabase project URL, used to build the DSN |
-| `SUPABASE_SERVICE_KEY` | yes* | - | Supabase service role key |
-| `SUPABASE_REGION` | no | direct conn | Supabase region (`us-east-1`, `eu-central-1`, ...) for the pooler host |
-| `ALLOWED_ORIGINS` | yes | - | Comma-separated frontend origins allowed by CORS |
-| `COLLECTION_NAME` | no | `ai_textbook` | pgvector collection/table name |
-| `EMBEDDING_MODEL` | no | `all-MiniLM-L6-v2` | Must match the model used at ingestion |
+| `EMBEDDING_MODEL` | no | `sentence-transformers/all-MiniLM-L6-v2` | Must match the model recorded in `data/index.json` |
 | `GEMINI_MODEL` | no | `gemini-3.6-flash` | Gemini model id |
 | `TOP_K` | no | `5` | Chunks retrieved per question |
 | `MAX_CONTEXT_CHARS` | no | `8000` | Context budget sent to the LLM |
@@ -102,10 +89,9 @@ Only two are required to run: `GEMINI_API_KEY` and `ALLOWED_ORIGINS`.
 | `RETRIEVE_TIMEOUT_S` | no | `30` | Retrieval budget for one chat request |
 | `WARMUP_ON_START` | no | `true` | Load models in the background after boot |
 | `DOCS_DIR` | no | `docs` | Markdown source directory |
+| `INDEX_DIR` | no | `./data` | Directory holding `index.npy` / `index.json` |
+| `EMBED_BACKEND` | no | `fastembed` | `fastembed` (ONNX) or `sentence-transformers` (torch) |
 | `LOG_LEVEL` | no | `INFO` | Uvicorn log level |
-
-\* Either `SUPABASE_DB_URL`, or all three of `SUPABASE_URL` +
-`SUPABASE_SERVICE_KEY` + `SUPABASE_REGION`.
 
 ### CORS
 
@@ -118,38 +104,59 @@ ALLOWED_ORIGINS=https://physical-ai-textbook.vercel.app,https://your-org.github.
 `http://localhost:3000`, `http://127.0.0.1:3000` and `http://localhost:5173`
 are always allowed for local development.
 
-## Deploying the backend
+## Deployment
 
-```bash
-huggingface-cli login
-git remote add space https://huggingface.co/spaces/<user>/<space>
-git push space main
+### Backend — Hugging Face Space
+
+The backend is a Docker Space that binds `0.0.0.0:7860`:
+
+1. Go to <https://huggingface.co/new-space> and create a Space with the **Docker** SDK.
+2. Push this repository's backend files over the generated stub:
+   ```bash
+   huggingface-cli login
+   git remote add space https://huggingface.co/spaces/<user>/<space>
+   git push space main
+   ```
+3. Under **Settings -> Variables and secrets**, add:
+
+   | Name | Type | Value |
+   | --- | --- | --- |
+   | `GEMINI_API_KEY` | secret | From <https://aistudio.google.com/apikey> |
+   | `ALLOWED_ORIGINS` | variable | `https://physical-ai-textbook.vercel.app` |
+
+   That is all that is required: with no database configured the API loads the
+   committed `data/index.*` artefacts at startup.
+
+The Space URL is `https://<user>-<space>.hf.space`. Free Spaces sleep when
+idle; the frontend handles this with a "server waking up" state, a timeout, and
+one retry.
+
+### Frontend — Vercel
+
+The Docusaurus site deploys to Vercel. It is the only consumer of the backend:
+
+```
+VITE_CHAT_API_URL=https://<user>-<space>.hf.space/api/chat
 ```
 
-Add the secrets in the Space settings, then watch the build log. The Space URL
-is `https://<user>-<space>.hf.space`.
+Set `VITE_CHAT_API_URL` in the Vercel project environment (or in `.env` for
+local dev) and redeploy. `docusaurus.config.js` reads it at build time and
+exposes it to the browser through `siteConfig.customFields.chatApiUrl`. When
+nothing is set, the widget falls back to `http://localhost:7860/api/chat` for
+local development.
 
-Free Spaces sleep when idle. The frontend handles this with a "server waking up"
-state, a timeout, and one retry.
+### Re-indexing the textbook
 
-## Re-indexing the textbook
-
-With the default in-memory backend there is nothing to re-index: the index is
-built from `docs/` at every cold start, so push your `docs/` changes and
-redeploy. To refresh a Supabase-backed index without waiting for a Space
-rebuild, run the ingestion script locally:
+The index is built once with:
 
 ```bash
-python -m pip install -r requirements.txt
-cp .env.example .env     # fill in SUPABASE_DB_URL and GEMINI_API_KEY
-python scripts/ingest_rag.py
+python scripts/build_index.py
 ```
 
 It chunks every markdown file under `docs/` by heading, embeds with
-`EMBEDDING_MODEL`, and upserts into `COLLECTION_NAME` using stable
-`<doc_id>_<chunk_index>` ids, so re-running is idempotent. Changing
-`EMBEDDING_MODEL` requires a full re-ingest: vectors from two models are not
-comparable inside the same collection.
+`EMBEDDING_MODEL`, and writes `data/index.npy` + `data/index.json`. Push the
+updated artefacts and redeploy the Space. Changing `EMBEDDING_MODEL` requires a
+full rebuild: vectors from two models are not comparable.
 
 ## Connecting the frontend
 
@@ -205,7 +212,7 @@ A comprehensive 19,752-word Docusaurus textbook covering Physical AI & Humanoid 
 
 - **Frontend**: Docusaurus v3
 - **Language**: Markdown/MDX with React components
-- **Backend**: FastAPI + Supabase pgvector + Gemini (Hugging Face Docker Space)
+- **Backend**: FastAPI + Gemini (Hugging Face Docker Space)
 - **Frontend deployment**: Vercel
 - **Build system**: Node.js 18+
 
@@ -227,8 +234,8 @@ To run the chatbot locally as well:
 
 ```bash
 python -m pip install -r requirements.txt
-cp .env.example .env      # fill in the values
-python scripts/ingest_rag.py
+cp .env.example .env      # fill in GEMINI_API_KEY and ALLOWED_ORIGINS
+python scripts/build_index.py
 python scripts/rag_api.py # serves on http://localhost:7860
 ```
 
@@ -251,7 +258,9 @@ The built site will be available in the `build/` directory.
 
 ## 🚀 Frontend Deployment
 
-This project is configured for deployment to Vercel. The `vercel.json` file contains the necessary configuration for automatic builds and deployment. Add `VITE_CHAT_API_URL` to the Vercel project environment variables.
+The site deploys to Vercel by importing this repository; Vercel auto-detects the
+Docusaurus preset (`npm run build`, output directory `build`). Add
+`VITE_CHAT_API_URL` to the Vercel project environment variables and redeploy.
 
 ## 📖 Content Overview
 

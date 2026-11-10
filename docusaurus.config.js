@@ -21,11 +21,10 @@ const config = {
   // Docusaurus bundles `import.meta.env` away, so the backend URL must be
   // passed through `customFields` to reach the client at all.
   customFields: {
-    // Full URL of the RAG chat endpoint. Defaults to the Hugging Face Space and
-    // is overridden by VITE_CHAT_API_URL in the build environment (Vercel).
-    chatApiUrl:
-      process.env.VITE_CHAT_API_URL ||
-      'https://Suleman-sehar-ai-textbook-backend.hf.space/api/chat',
+    // Full URL of the RAG chat endpoint. Defaults to empty so
+    // VITE_CHAT_API_URL is the single source of truth; the widget falls back
+    // to http://localhost:7860/api/chat for local dev when nothing is set.
+    chatApiUrl: process.env.VITE_CHAT_API_URL || '',
     supportUrl: 'https://github.com/ai-textbook/physical-ai-textbook/issues',
   },
 

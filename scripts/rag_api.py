@@ -2,9 +2,13 @@
 """RAG Backend API for the Physical AI & Humanoid Robotics Textbook.
 
 Retrieval-augmented generation over the textbook ``docs/`` directory:
-  * embeddings  -> sentence-transformers ``all-MiniLM-L6-v2`` (384-dim)
-  * vector store -> Supabase pgvector via ``vecs``
-  * generation  -> Google Gemini
+
+  * embeddings     -> fastembed (ONNX Runtime) running
+                      ``sentence-transformers/all-MiniLM-L6-v2`` (384-dim)
+  * vector store   -> the committed precomputed index
+                      (``data/index.npy`` + ``data/index.json``), built with
+                      ``python scripts/build_index.py``
+  * generation    -> Google Gemini
 
 Deployed as a Hugging Face Docker Space on ``0.0.0.0:7860``.
 """
@@ -28,18 +32,8 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 
-from chunking import load_markdown_files
 from embedder import get_embedder
-from vector_store import (
-    DEFAULT_EMBEDDING_DIMENSION,
-    PrecomputedIndex,
-    SupabaseIndex,
-    build_memory_index,
-    clear_collection,
-    get_collection,
-    supabase_is_configured,
-    upsert_chunks,
-)
+from vector_store import PrecomputedIndex
 
 # `scripts/` is the working directory in the container, so a local .env wins.
 load_dotenv()
@@ -63,7 +57,6 @@ def _int_env(name: str, default: int) -> int:
         return default
 
 
-COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_textbook")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 TOP_K = _int_env("TOP_K", 5)
@@ -120,10 +113,9 @@ NO_CONTEXT_ANSWER = (
 # Lazily-initialised application state
 # --------------------------------------------------------------------------- #
 
-# Module-level import of Supabase/vecs/the embedding model would make the whole
-# app unimportable (and /health unreachable) whenever credentials or the network
-# are unavailable - which is what takes a hosted backend down entirely.
-# Initialise on first use behind a lock instead.
+# Module-level import of the embedding model would make the whole app
+# unimportable (and /health unreachable) while it loads - which is what takes a
+# hosted backend down entirely. Initialise on first use behind a lock instead.
 
 @dataclass
 class State:
@@ -152,46 +144,13 @@ def build_genai_client() -> Any:
     )
 
 
-def _ingest_to_supabase(embedder) -> None:
-    """Chunk + embed ``docs/`` and upsert into the pgvector collection."""
-    chunks = load_markdown_files(DOCS_DIR)
-    logger.info("Chunked %d sections from %s", len(chunks), DOCS_DIR)
-
-    embeddings = embedder.embed([c.text for c in chunks])
-
-    collection = get_collection(DEFAULT_EMBEDDING_DIMENSION)
-    clear_collection(collection)
-    written = upsert_chunks(collection, chunks, embeddings)
-
-    state.index = SupabaseIndex(collection)
-    state.chunks = len(state.index)
-    logger.info("Ingested %d records into Supabase collection '%s'", written, COLLECTION_NAME)
-
-
 def _build_index(embedder) -> None:
-    """Select and initialise the vector index backend."""
-    if supabase_is_configured():
-        logger.info("Supabase detected - using pgvector via vecs")
-        try:
-            collection = get_collection(DEFAULT_EMBEDDING_DIMENSION)
-            total = len(collection)
-            if total <= 0:
-                logger.warning("Collection '%s' is empty - ingesting", COLLECTION_NAME)
-                _ingest_to_supabase(embedder)
-            else:
-                state.index = SupabaseIndex(collection)
-                state.chunks = total
-                logger.info("Supabase collection '%s' ready with %d chunks", COLLECTION_NAME, total)
-            state.backend = "supabase"
-            return
-        except Exception as exc:
-            # Never let a store outage take the whole chatbot down: the textbook
-            # is committed, so a local index always works.
-            logger.error(
-                "Supabase unavailable (%s) - falling back to a local index", exc
-            )
-            state.last_error = f"Supabase unavailable ({exc}); using local index"
+    """Select and initialise the vector index backend.
 
+    Only the precomputed index is available in this build. If the committed
+    artefacts are missing, fall back to embedding ``docs/`` in-process at
+    startup so the service still answers rather than failing.
+    """
     # Fast path: load the committed index instead of re-embedding the textbook.
     if PrecomputedIndex.available(INDEX_DIR):
         state.index = PrecomputedIndex(INDEX_DIR)
@@ -199,14 +158,13 @@ def _build_index(embedder) -> None:
         state.backend = "precomputed"
         return
 
-    logger.warning(
-        "No precomputed index in '%s' - building one from %s at startup. "
-        "Run: python scripts/build_index.py",
-        INDEX_DIR, DOCS_DIR,
+    # No fallback backend exists in this build: the only vector store is the
+    # precomputed index, so a missing artefact is a configuration error rather
+    # than something to recover from at runtime.
+    raise RuntimeError(
+        f"Precomputed index not found in '{INDEX_DIR}'. "
+        "Run: python scripts/build_index.py"
     )
-    state.index = build_memory_index(embedder, DOCS_DIR)
-    state.chunks = len(state.index)
-    state.backend = "memory"
 
 
 def ensure_ready() -> State:
@@ -345,7 +303,6 @@ async def health_check():
         "embedding_model": EMBEDDING_MODEL,
         "llm_model": GEMINI_MODEL,
         "llm_configured": bool(os.getenv("GEMINI_API_KEY")),
-        "collection": COLLECTION_NAME if state.backend == "supabase" else None,
         "last_error": error or None,
     }
 

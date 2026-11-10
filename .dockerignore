@@ -22,7 +22,7 @@ coverage
 .history
 .kilo
 
-# Local vector store leftovers (the real store is data/ or Supabase)
+# Local vector store leftovers (the only store is the committed data/index.*)
 chroma_db
 chroma_db_test
 

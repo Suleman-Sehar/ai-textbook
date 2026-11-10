@@ -43,7 +43,7 @@ echo
 # Check for required directories and files
 echo "3. Checking required structure..."
 
-REQUIRED_DIRS=("docs" "diagrams" "code" "templates" "scripts" "static/img")
+REQUIRED_DIRS=("docs" "diagrams" "code" "templates" "scripts" "static")
 MISSING_DIRS=()
 
 for dir in "${REQUIRED_DIRS[@]}"; do
