@@ -95,7 +95,7 @@ const postChat = async (apiUrl, question, signal) => {
     if (error?.name === 'AbortError') {
       if (signal?.aborted) throw error;
       throw new RequestError(
-        'The request timed out. The server may be starting up - please try again.',
+        'The server took too long to respond. Please try again.',
         { retryable: true },
       );
     }
@@ -373,6 +373,14 @@ const ChatbotWidget = () => {
   const messagesEndRef = useRef(null);
   const widgetRef = useRef(null);
   const abortRef = useRef(null);
+  const wakeTimerRef = useRef(null);
+  const prewarmDoneRef = useRef(false);
+
+  // The /health endpoint, derived from the chat URL so a single env var drives
+  // both. Empty when no backend is configured (local dev without a server).
+  const healthUrl = apiUrl && apiUrl.endsWith('/api/chat')
+    ? apiUrl.replace(/\/api\/chat$/, '/health')
+    : null;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -396,6 +404,15 @@ const ChatbotWidget = () => {
   // Abort any in-flight request if the widget unmounts mid-flight.
   useEffect(() => () => abortRef.current?.abort(), []);
 
+  // One fire-and-forget GET to /health the first time the window opens, to wake
+  // a sleeping Space before the user asks their first question. Errors are
+  // ignored: the real request will surface any problem.
+  useEffect(() => {
+    if (!isOpen || prewarmDoneRef.current || !healthUrl) return;
+    prewarmDoneRef.current = true;
+    fetch(healthUrl, { method: 'GET' }).catch(() => {});
+  }, [isOpen, healthUrl]);
+
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -406,6 +423,14 @@ const ChatbotWidget = () => {
     setIsLoading(true);
     setRobotState('thinking');
     setStatusMessage(null);
+
+    // A sleeping Space can take a while: after 5s pending, hint the user that a
+    // cold start may be underway. Cleared as soon as the response lands.
+    const wakeTimer = setTimeout(() => {
+      wakeTimerRef.current = null;
+      setStatusMessage('The server is waking up, this can take up to a minute...');
+    }, 5000);
+    wakeTimerRef.current = wakeTimer;
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -432,6 +457,12 @@ const ChatbotWidget = () => {
         data = await postChat(apiUrl, question, controller.signal);
       }
 
+      if (wakeTimerRef.current) {
+        clearTimeout(wakeTimerRef.current);
+        wakeTimerRef.current = null;
+      }
+      setStatusMessage(null);
+
       setMessages((prev) => [
         ...prev,
         {
@@ -444,11 +475,20 @@ const ChatbotWidget = () => {
       setRobotState('speaking');
       setTimeout(() => setRobotState('idle'), 2000);
     } catch (error) {
+      if (wakeTimerRef.current) {
+        clearTimeout(wakeTimerRef.current);
+        wakeTimerRef.current = null;
+      }
+      setStatusMessage(null);
       if (error?.name === 'AbortError') return; // component unmounted
       const message = error?.message || 'Sorry, I encountered an error. Please try again later.';
       setMessages((prev) => [...prev, { role: 'assistant', content: `⚠️ ${message}` }]);
       setRobotState('idle');
     } finally {
+      if (wakeTimerRef.current) {
+        clearTimeout(wakeTimerRef.current);
+        wakeTimerRef.current = null;
+      }
       abortRef.current = null;
       setIsLoading(false);
       setStatusMessage(null);
