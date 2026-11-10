@@ -24,7 +24,7 @@ const config = {
     // Full URL of the RAG chat endpoint. Defaults to empty so
     // VITE_CHAT_API_URL is the single source of truth; the widget falls back
     // to http://localhost:7860/api/chat for local dev when nothing is set.
-        chatApiUrl: process.env.VITE_CHAT_API_URL || 'https://ai-textbook-dceeb.containers.snapdeploy.app',
+            chatApiUrl: process.env.VITE_CHAT_API_URL || 'https://ai-textbook-dceeb.containers.snapdeploy.app/api/chat',
   },
 
   // GitHub pages deployment config.
